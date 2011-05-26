@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
     :win   => 'Videogame'
   }, :scopes => true
   symbolize :gui, :allow_blank => true, :in => [:cocoa, :qt, :gtk], :i18n => false
-  symbolize :karma, :in => [:good, :bad, :ugly], :methods => true, :i18n => false, :allow_nil => true
+  symbolize :karma, :in => %w{ good bad ugly}, :methods => true, :i18n => false, :allow_nil => true
   symbolize :cool, :in => [true, false], :scopes => true
 
   has_many :extras, :dependent => :destroy, :class_name => "UserExtra"
@@ -44,7 +44,7 @@ end
 
 # Test records
 User.create(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
-User.create(:name => 'Bob' , :other => :bar,:status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+User.create!(:name => 'Bob' , :other => :bar,:status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
 
 
 describe "Symbolize" do

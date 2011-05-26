@@ -60,6 +60,7 @@ module Symbolize
       default_option = configuration.delete :default
 
       unless enum.nil?
+        # enum = enum.map { |e| e.respond_to?(:to_sym) ? e.to_sym : e}
         # Little monkeypatching, <1.8 Hashes aren't ordered.
         hsh = RUBY_VERSION > '1.9' || !defined?("ActiveSupport") ? Hash : ActiveSupport::OrderedHash
 
@@ -70,7 +71,10 @@ module Symbolize
             values = enum
           else
             values = hsh.new
-            enum.map { |v| [v, (capitalize ? v.to_s.capitalize : v.to_s)] }.each { |k, v| values[k] = v }
+            enum.map do |val|
+              key = val.respond_to?(:to_sym) ? val.to_sym : val
+              values[key] = capitalize ? val.to_s.capitalize : val.to_s
+            end
           end
 
           # Get the values of :in
