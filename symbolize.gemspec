@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{symbolize}
-  s.version = "3.1.3"
+  s.version = "3.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcos Piccinini"]
-  s.date = %q{2011-04-18}
+  s.date = %q{2011-05-26}
   s.description = %q{ActiveRecord enums with i18n}
   s.email = %q{x@nofxx.com}
   s.extra_rdoc_files = [
@@ -37,11 +37,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{ActiveRecord enums with i18n}
-  s.test_files = [
-    "spec/db/create_testing_structure.rb",
-    "spec/spec_helper.rb",
-    "spec/symbolize_spec.rb"
-  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
