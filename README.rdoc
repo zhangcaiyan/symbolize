@@ -175,7 +175,22 @@ As the name suggest, the symbol you choose as default will be set in new objects
   u.save                          # => validation fails
 
 
-== Examples Helpers
+== Model Helpers
+
+
+You may call `Class.get_attr_values` anywhere to get a nice array.
+Works nice with dropdowns. Examples:
+
+    class Coffee
+      symbolize :genetic, :in => [:arabica, :robusta, :blend]
+    end
+
+Somewhere on a view:
+
+    = select_tag :kind, Coffee.get_genetic_values
+
+
+== View Helpers
 
   <% form_for @user do |f| %>
     <%= f.radio_sym "gender" %>
