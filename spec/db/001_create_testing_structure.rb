@@ -1,5 +1,5 @@
 class CreateTestingStructure < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :users do |t|
       t.string :name, :so, :gui, :other, :status, :language, :kind
       t.string :limited, :limit => 10
@@ -21,9 +21,5 @@ class CreateTestingStructure < ActiveRecord::Migration
       t.string  :kind, :null => false
       t.integer :lvl,  :null => false
     end
-  end
-
-  def self.down
-    drop_table :users
   end
 end

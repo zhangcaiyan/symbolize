@@ -60,7 +60,6 @@ module Symbolize
       default_option = configuration.delete :default
 
       unless enum.nil?
-        # enum = enum.map { |e| e.respond_to?(:to_sym) ? e.to_sym : e}
         # Little monkeypatching, <1.8 Hashes aren't ordered.
         hsh = RUBY_VERSION > '1.9' || !defined?("ActiveSupport") ? Hash : ActiveSupport::OrderedHash
 
@@ -101,13 +100,13 @@ module Symbolize
             values.each do |value|
               if value[0].respond_to?(:to_sym)
                 scope_comm.call value[0].to_sym, :conditions => { attr_name => value[0].to_sym }
-              else
+              elsif ActiveRecord::VERSION::STRING <= "3.0"
                 if value[0] == true || value[0] == false
-                  scope_comm.call "with_#{attr_name}",    :conditions => { attr_name => true }
-                  scope_comm.call "without_#{attr_name}", :conditions => { attr_name => false }
+                  scope_comm.call "with_#{attr_name}".to_sym,    :conditions => { attr_name => '1' }
+                  scope_comm.call "without_#{attr_name}".to_sym, :conditions => { attr_name => '0' }
 
-                  scope_comm.call attr_name.to_sym,   :conditions => { attr_name => true }
-                  scope_comm.call "not_#{attr_name}", :conditions => { attr_name => false }
+                  scope_comm.call attr_name.to_sym,   :conditions => { attr_name => '1' }
+                  scope_comm.call "not_#{attr_name}".to_sym, :conditions => { attr_name => '0' }
                 end
               end
             end
@@ -166,13 +165,7 @@ module Symbolize
     val = { "true" => true, "false" => false }[value]
     val = symbolize_attribute(value) if val.nil?
 
-    current_value = self.send(attr_name)
-    if current_value == val
-      current_value
-    else
-      self[attr_name] = val
-      val
-    end
+    self[attr_name] = val #.to_s # rails 3.1 fix
   end
 end
 
@@ -189,12 +182,12 @@ end
 #       only used on symbols returned by read_and_symbolize_attribute,
 #       but unfortunately this is not possible since Symbol is an immediate
 #       value and therefore does not support singleton methods.
-class Symbol
-  def quoted_id
-    # A symbol can contain almost every character (even a backslash or an
-    # apostrophe), so make sure to properly quote the string value here.
-    "'#{ActiveRecord::Base.connection.quote_string(self.to_s)}'"
-  end
-end
+# class Symbol
+#   def quoted_id
+#     # A symbol can contain almost every character (even a backslash or an
+#     # apostrophe), so make sure to properly quote the string value here.
+#     "'#{ActiveRecord::Base.connection.quote_string(self.to_s)}'"
+#   end
+# end
 
 ActiveRecord::Base.send(:include, Symbolize) if ActiveRecord::VERSION::MAJOR >= 3
