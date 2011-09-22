@@ -1,52 +1,34 @@
-= Symbolize attribute values in ActiveRecord (e.g. for nicer enums)
+= Symbolize attribute values
 
-This plugin introduces an easy way to use symbols for values of ActiveRecord
-attributes. Symbolized attributes return a ruby symbol (or nil) as their value
-and can be set using symbols.
-
-
-== About
-
-Since ActiveRecord does not natively support database column types of ENUM or
-SET, you'll usually use a string attribute and restrict it to certain values
-with validations. Using this plugin, the values of such pseudo-enums are
-symbols, which look more ruby-style than strings.
-
-Simply add "symbolize :attr_name" to your model class, and the specified
-attribute will return symbol values and can be set using smbols (setting
-string values will still work, which is important when using forms).
-
-An attribute to symbolize should be a string (varchar) column in the database.
-
-Blog: http://zargony.com/
-Github: http://github.com/zargony/activerecord_symbolize
-
+This plugin introduces an easy way to use symbols for values of attributes. Symbolized attributes return a ruby symbol (or nil) as their value
+and can be set using :symbols or "strings".
 
 == Install
 
 === Gem
 
-  gem install symbolize
-  config.gem "symbolize", :source => 'http://gemcutter.org'
+    gem install symbolize
 
 
-Rails 3+ Gemfile
+=== Mongoid
 
-  gem "symbolize"
-
-
-=== Plugin:
-
-  ./script/plugin install git://github.com/nofxx/symbolize.git
-
-or in Rails3+
-
-  rails plugin install ..
+    gem "symbolize", :require => "symbolize/mongoid"
 
 
-== Rails 3 (beta)
+=== ActiveRecord
 
-Specs pass with rails 3, but a scope :public == fail.
+    gem "symbolize", :require => "symbolize/active_record"
+
+
+
+== About
+
+Simply add "symbolize :attr_name" to your model class, and the specified
+attribute will return symbol values and can be set using smbols (setting
+string values will still work, which is important when using forms).
+
+On SQL-based DBs, an attribute to symbolize should be a string (varchar) column in the database.
+
 
 
 == Usage
@@ -219,6 +201,19 @@ Somewhere on a view:
       <option value="open">Open Office</option>
     </select>
   </form>
+
+
+
+=== Plugin:
+
+Try at your own risk.
+
+  rails plugin install git://github.com/nofxx/symbolize.git
+
+
+== Rails 3.1 (beta)
+
+Specs pass with rails 3, but a scope :public == fail.
 
 
 == Notes
