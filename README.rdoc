@@ -163,6 +163,15 @@ As the name suggest, the symbol you choose as default will be set in new objects
   u = User.new(:name => 'ET', :gender => :unknown)
   u.save                          # => validation fails
 
+== Rails Form Example
+
+    class Coffee
+      symbolize :genetic, :in => [:arabica, :robusta, :blend]
+    end
+
+    form_for(@coffee) do |f|
+      = f.label :genetic
+      = f.select :genetic, Coffee.get_genetic_values
 
 == Model Helpers
 
@@ -170,9 +179,6 @@ As the name suggest, the symbol you choose as default will be set in new objects
 You may call `Class.get_attr_values` anywhere to get a nice array.
 Works nice with dropdowns. Examples:
 
-    class Coffee
-      symbolize :genetic, :in => [:arabica, :robusta, :blend]
-    end
 
 Somewhere on a view:
 
