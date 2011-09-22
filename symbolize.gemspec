@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcos Piccinini"]
   s.date = %q{2011-09-22}
-  s.description = %q{ActiveRecord enums with i18n}
+  s.description = %q{ActiveRecord/Mongoid enums with i18n}
   s.email = %q{x@nofxx.com}
   s.extra_rdoc_files = [
     "README.rdoc"
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/nofxx/symbolize}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{ActiveRecord enums with i18n}
+  s.summary = %q{Object enums with i18n in AR or Mongoid}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION

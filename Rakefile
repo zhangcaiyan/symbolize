@@ -6,8 +6,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "symbolize"
-    gem.summary = "ActiveRecord enums with i18n"
-    gem.description = "ActiveRecord enums with i18n"
+    gem.summary = "Object enums with i18n in AR or Mongoid"
+    gem.description = "ActiveRecord/Mongoid enums with i18n"
     gem.email = "x@nofxx.com"
     gem.homepage = "http://github.com/nofxx/symbolize"
     gem.authors = ["Marcos Piccinini"]
