@@ -39,7 +39,7 @@ end
 #   rdoc.rdoc_files.include('README')
 #   rdoc.rdoc_files.include('lib/**/*.rb')
 # end
-require 'rake/rdoctask'
+require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
     config = YAML.load(File.read('VERSION.yml'))
