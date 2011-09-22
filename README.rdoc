@@ -223,6 +223,14 @@ Try at your own risk.
 Specs pass with rails 3, but a scope :public == fail.
 
 
+== Specs
+
+Run the adapter independently:
+
+    $ rspec spec/symbolize/mongoid_spec.rb
+    $ rspec spec/symbolize/active_record_spec.rb
+
+
 == Notes
 
 This fork:
