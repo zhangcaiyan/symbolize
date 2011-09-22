@@ -230,6 +230,8 @@ describe "Symbolize" do
 
       it "should test boolean" do
         @user.sex_text.should eql("Feminino")
+        @user.sex = false
+        @user.sex_text.should eql('Masculino')
       end
 
       it "should get the correct values" do
