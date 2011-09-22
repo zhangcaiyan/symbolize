@@ -36,7 +36,14 @@ On SQL-based DBs, an attribute to symbolize should be a string (varchar) column 
 Add "symbolize :attr_name" to your model class. You may also want to add
 validates_inclusion_of to restrict the possible values (just like an enum).
 
+    # ActiveRecord
     class User < ActiveRecord::Base
+
+    # Mongoid
+    class User
+      include Mongoid::Document
+      include Mongoid::Symbolize
+
       symbolize :gender, :in => [:female, :male], :scopes => true
       symbolize :so, :in => {
         :linux   => "Linux",
