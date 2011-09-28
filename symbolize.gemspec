@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{symbolize}
-  s.version = "4.0.0"
+  s.version = "4.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcos Piccinini"]
-  s.date = %q{2011-09-22}
+  s.date = %q{2011-09-28}
   s.description = %q{ActiveRecord/Mongoid enums with i18n}
   s.email = %q{x@nofxx.com}
   s.extra_rdoc_files = [
