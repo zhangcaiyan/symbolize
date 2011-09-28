@@ -89,7 +89,7 @@ module Mongoid
             const_set const.upcase, values unless const_defined? const.upcase
             ev = if i18n
                    # This one is a dropdown helper
-                   code =  "#{const.upcase}.map { |k,v| [I18n.t(\"models.attributes.\#{ActiveSupport::Inflector.underscore(self)}.enums.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
+                   code =  "#{const.upcase}.map { |k,v| [I18n.t(\"mongoid.attributes.\#{ActiveSupport::Inflector.underscore(self)}.enums.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
                    "def self.get_#{const}; #{code}; end;"
                  else
                    "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
