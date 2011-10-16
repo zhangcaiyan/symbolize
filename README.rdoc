@@ -146,9 +146,10 @@ For boolean colums you can use
     ( or with_[attribute] and without_[attribute] )
 
 
-=== default (BETA)
+=== default
 
-As the name suggest, the symbol you choose as default will be set in new objects automatically.
+As the name suggest, the symbol you choose as default will be set
+in new objects automatically. Mongoid only for now.
 
     symbolize :mood, :in => [:happy, :sad, :euphoric], :default => (MarvinDay ? :sad : :happy)
 
@@ -175,40 +176,14 @@ Somewhere on a view:
 
 == View Helpers (DEPRECATED)
 
+
   <% form_for @user do |f| %>
     <%= f.radio_sym "gender" %>
     <!-- Alphabetic order -->
     <%= f.select_sym "so" %>
     <!-- Fixed order -->
     <%= f.select_sym "office" %>
-  <% end %>
-
-  output:
-
-  <form action="users/1" method="post">
-    <div style="margin:0;padding:0">...</div>
-    <label>Female <input id="user_gender_female" name="user[gender]" type="radio" value="female"></label>
-    <label>Male <input checked="checked" id="user_gender_male" name="user[gender]" type="radio" value="male" ></label>
-    <!-- Alphabetic order -->
-    <select id="user_so" name="post[so]">
-      <option value="linux" selected="selected">Linux</option>
-      <option value="mac">Mac OS X</option>
-      <option value="windows">Windows XP</option>
-    </select>
-    <!-- Fixed order -->
-    <select id="user_office" name="post[office]">
-      <option value="kde" selected="selected">Koffice</option>
-      <option value="ms">Microsoft Office</option>
-      <option value="open">Open Office</option>
-    </select>
-  </form>
-
-
-
-
-== Rails 3.1 (beta)
-
-Specs pass with rails 3, but a scope :public == fail.
+  <%end>
 
 
 == Specs
