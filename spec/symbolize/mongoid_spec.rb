@@ -56,6 +56,12 @@ describe "Symbolize" do
     Mongoid.const_defined?("Symbolize").should be_true
   end
 
+  it "should instantiate" do
+    anna = Person.create(:name => 'Anna', :so => :mac, :gui => :cocoa, :language => :pt, :status => :active)
+    anna.should be_valid
+    # anna.errors.messages.should eql({})
+  end
+
   describe "Person Instantiated" do
     let(:person) { Person.create(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true) }
 

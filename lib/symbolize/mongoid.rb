@@ -63,16 +63,16 @@ module Mongoid
         default_opt = configuration.delete :default
 
         unless enum.nil?
-          # Little monkeypatching, <1.8 Hashes aren't ordered.
-          # hsh = RUBY_VERSION > '1.9' || !defined?("ActiveSupport") ? Hash : ActiveSupport::OrderedHash
 
           attr_names.each do |attr_name|
-            attr_name = attr_name.to_s
+            # attr_name = attr_name.to_s
 
-            # Builds Mongoid 'field :name, type: type, :default
-            type    = ", type: Symbol"
-            default = ", default: :#{default_opt}" if default_opt
-            class_eval("field :#{attr_name} #{type} #{default}")
+            #
+            # Builds Mongoid 'field :name, type: type, :default'
+            #
+            mongo_opts  = ", :type => Symbol"
+            mongo_opts += ", :default => :#{default_opt}" if default_opt
+            class_eval("field :#{attr_name} #{mongo_opts}")
 
             const =  "#{attr_name}_values"
             if enum.is_a?(Hash)
@@ -114,7 +114,11 @@ module Mongoid
             end
 
             if validation
-              class_eval "validates_inclusion_of :#{attr_names.join(', :')}, #{configuration.inspect}"
+              validation = "validates_inclusion_of :#{attr_names.join(', :')}"
+              validation += ", :in => #{values.keys.inspect}"
+              validation += ", :allow_nil => true" if configuration[:allow_nil]
+              validation += ", :allow_blank => true" if configuration[:allow_blank]
+              class_eval validation
             end
           end
         end
