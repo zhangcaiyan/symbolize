@@ -14,9 +14,9 @@ pt:
           kind:
             magic: Mágica
             agility: Agilidade
-  models:
+  mongoid:
     attributes:
-      user:
+      person:
         enums:
           language:
             pt: Português
@@ -24,7 +24,7 @@ pt:
           sex:
             "true": Feminino
             "false": Masculino
-      user_skill:
+      person_skill:
         enums:
           kind:
             magic: Mágica

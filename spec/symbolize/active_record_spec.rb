@@ -177,43 +177,6 @@ describe "Symbolize" do
       new_extra.should_not be_valid
     end
 
-
-
-    describe "View helpers" do
-      include ActionView::Helpers::FormHelper
-      include ActionView::Helpers::FormOptionsHelper
-
-      before(:each) do
-        @options_status = [['Active', :active], ['Inactive', :inactive]]
-        @options_gui    = [["cocoa", :cocoa], ["qt", :qt], ["gtk", :gtk]]
-        @options_so     = [["Linux", :linux]  , ["Mac OS X", :mac], ["Videogame", :win]]
-      end
-
-      it "test_helper_select_sym" do
-        @user.status = :inactive
-        output = "<select id=\"user_status\" name=\"user[status]\">#{options_for_select(@options_status, @user.status)}</select>"
-        output.should eql(select_sym("user", "status", nil))
-
-
-        output = "<select id=\"user_status\" name=\"user[status]\">#{options_for_select(@options_status, @user.status)}</select>"
-        output.should eql(select_sym("user", "status", nil))
-      end
-
-      def test_helper_select_sym_order
-        output_so     = "<select id=\"user_so\" name=\"user[so]\">#{options_for_select(@options_so, @user.so)}</select>"
-        output_office = "<select id=\"user_office\" name=\"user[office]\">#{options_for_select(@options_office, @user.office)}</select>"
-
-        assert_equal output_so, select_sym("user", "so", nil)
-        assert_equal output_office, select_sym("user", "office", nil)
-      end
-
-      def test_helper_radio_sym
-        output = radio_sym("user", "status", nil)
-        assert_equal("<label>Active: <input checked=\"checked\" id=\"user_status_active\" name=\"user[status]\" type=\"radio\" value=\"active\" /></label><label>Inactive: <input id=\"user_status_inactive\" name=\"user[status]\" type=\"radio\" value=\"inactive\" /></label>", output)
-      end
-
-    end
-
     describe "i18n" do
 
       it "should test i18n ones" do
@@ -387,13 +350,12 @@ describe "Symbolize" do
           @anna.language_changed?.should be_true
         end
 
-        it "is not dirty if you set the attribute value to the same value it was originally" do
+        it "is not dirty if you set the attribute value to the same value" do
           @anna.language.should == :pt
           @anna.language_changed?.should be_false
 
           return_value = @anna.language = :pt
           return_value.should == :pt
-          p @anna.changes
           @anna.language_changed?.should be_false
         end
       end
