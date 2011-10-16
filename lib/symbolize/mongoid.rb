@@ -108,7 +108,7 @@ module Mongoid
               scope_comm = lambda { |*args|  scope(*args)}
               values.each do |value|
                 if value[0].respond_to?(:to_sym)
-                  scope_comm.call value[0].to_sym, :conditions => { attr_name => value[0].to_sym }
+                  scope_comm.call value[0].to_sym, where({ attr_name => value[0].to_sym })
                 end
               end
             end
@@ -123,54 +123,24 @@ module Mongoid
           end
         end
 
+        #
+        # Creates <attribute>_text helper, human text for attribute.
+        #
         attr_names.each do |attr_name|
-
-          # if default_option
-          #   class_eval("def #{attr_name}; read_and_symbolize_attribute('#{attr_name}') || :#{default_option}; end")
-          #   class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', value); end")
-          #   class_eval("def set_default_for_attr_#{attr_name}; self[:#{attr_name}] ||= :#{default_option}; end")
-          #   class_eval("before_save :set_default_for_attr_#{attr_name}")
-          # else
-          #   class_eval("def #{attr_name}; read_and_symbolize_attribute('#{attr_name}'); end")
-          #   class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', value); end")
-          # end
-          if i18n
-            class_eval("def #{attr_name}_text; read_i18n_attribute('#{attr_name}'); end")
+          if i18n # memoize call to translate... good idea?
+            define_method "#{attr_name}_text" do
+              return nil unless attr = read_attribute(attr_name)
+              I18n.t("mongoid.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}")
+            end
           elsif enum
             class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")
           else
             class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
           end
         end
+
       end
-    end
 
-    # String becomes symbol, booleans string and nil nil.
-    # def symbolize_attribute attr
-    #   case attr
-    #   when String then attr.empty? ? nil : attr.to_sym
-    #   when Symbol, TrueClass, FalseClass, Numeric then attr
-    #   else nil
-    #   end
-    # end
-
-    # # Return an attribute's value as a symbol or nil
-    # def read_and_symbolize_attribute attr_name
-    #   symbolize_attribute self[attr_name]
-    # end
-
-    # Return an attribute's i18n
-    def read_i18n_attribute attr_name
-      return nil unless attr = read_attribute(attr_name)
-      I18n.translate("mongoid.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}") #.to_sym rescue nila
-    end
-
-    # # Write a symbolized value. Watch out for booleans.
-    # def write_symbolized_attribute attr_name, value
-    #   val = { "true" => true, "false" => false }[value]
-    #   val = symbolize_attribute(value) if val.nil?
-
-    #   self[attr_name] = val #.to_s # rails 3.1 fix
-    # end
-  end
-end
+    end # ClassMethods
+  end # Symbolize
+end # Mongoid
