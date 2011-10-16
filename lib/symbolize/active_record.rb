@@ -89,8 +89,9 @@ module Symbolize
 
           if methods
             values.each do |value|
-              define_method("#{value[0]}?") do
-                self.send(attr_name) == value[0]
+              key = value[0]
+              define_method("#{key}?") do
+                self[attr_name] == key
               end
             end
           end
@@ -111,10 +112,14 @@ module Symbolize
               end
             end
           end
-        end
 
-        if validation
-          class_eval "validates_inclusion_of :#{attr_names.join(', :')}, #{configuration.inspect}"
+          if validation
+            validation = "validates_inclusion_of :#{attr_names.join(', :')}"
+            validation += ", :in => #{values.keys.inspect}"
+            validation += ", :allow_nil => true" if configuration[:allow_nil]
+            validation += ", :allow_blank => true" if configuration[:allow_blank]
+            class_eval validation
+          end
         end
       end
 
@@ -170,25 +175,4 @@ module Symbolize
   end
 end
 
-# The Symbol class is extended by method quoted_id which returns a string.
-# The idea behind this is, that symbols are converted to plain strings
-# when being quoted by ActiveRecord::ConnectionAdapters::Quoting#quote.
-# This makes it possible to work with symbolized attibutes in sql conditions.
-# E.g. validates_uniqueness_of could not use :scope with a symbolized
-# attribute, because AR quotes it to YAML:
-#  "... AND status = '--- :active\n'"
-# Having support for quoted_id in Symbol, makes AR quoting symbols correctly:
-#  "... AND status = 'active'"
-# NOTE: Normally quoted_id should be implemented as a singleton method
-#       only used on symbols returned by read_and_symbolize_attribute,
-#       but unfortunately this is not possible since Symbol is an immediate
-#       value and therefore does not support singleton methods.
-# class Symbol
-#   def quoted_id
-#     # A symbol can contain almost every character (even a backslash or an
-#     # apostrophe), so make sure to properly quote the string value here.
-#     "'#{ActiveRecord::Base.connection.quote_string(self.to_s)}'"
-#   end
-# end
-
-ActiveRecord::Base.send(:include, Symbolize) if ActiveRecord::VERSION::MAJOR >= 3
+ActiveRecord::Base.send(:include, Symbolize)
