@@ -1,23 +1,32 @@
-require 'rubygems'
-require 'rake'
-#require 'spec/rake/spectask'
+require "rspec"
+require "rspec/core/rake_task"
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "symbolize"
-    gem.summary = "Object enums with i18n in AR or Mongoid"
-    gem.description = "ActiveRecord/Mongoid enums with i18n"
-    gem.email = "x@nofxx.com"
-    gem.homepage = "http://github.com/nofxx/symbolize"
-    gem.authors = ["Marcos Piccinini"]
-    gem.add_development_dependency "rspec"
-    gem.add_development_dependency "sqlite3"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = "spec/**/*_spec.rb"
 end
+
+task :default => [:spec]
+
+# require 'rubygems'
+# require 'rake'
+# #require 'spec/rake/spectask'
+
+# begin
+#   require 'jeweler'
+#   Jeweler::Tasks.new do |gem|
+#     gem.name = "symbolize"
+#     gem.summary = "Object enums with i18n in AR or Mongoid"
+#     gem.description = "ActiveRecord/Mongoid enums with i18n"
+#     gem.email = "x@nofxx.com"
+#     gem.homepage = "http://github.com/nofxx/symbolize"
+#     gem.authors = ["Marcos Piccinini"]
+#     gem.add_development_dependency "rspec"
+#     gem.add_development_dependency "sqlite3"
+#     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+#   end
+# rescue LoadError
+#   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+# end
 
 # Spec::Rake::SpecTask.new(:spec) do |spec|
 #   spec.libs << 'lib' << 'spec'
@@ -39,17 +48,17 @@ end
 #   rdoc.rdoc_files.include('README')
 #   rdoc.rdoc_files.include('lib/**/*.rb')
 # end
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  if File.exist?('VERSION.yml')
-    config = YAML.load(File.read('VERSION.yml'))
-    version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
-  else
-    version = ""
-  end
+# require 'rdoc/task'
+# Rake::RDocTask.new do |rdoc|
+#   if File.exist?('VERSION.yml')
+#     config = YAML.load(File.read('VERSION.yml'))
+#     version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
+#   else
+#     version = ""
+#   end
 
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "symbolize #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
+#   rdoc.rdoc_dir = 'rdoc'
+#   rdoc.title = "symbolize #{version}"
+#   rdoc.rdoc_files.include('README*')
+#   rdoc.rdoc_files.include('lib/**/*.rb')
+# end
