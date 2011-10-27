@@ -171,7 +171,7 @@ module Symbolize
     val = { "true" => true, "false" => false }[value]
     val = symbolize_attribute(value) if val.nil?
 
-    self[attr_name] = val #.to_s # rails 3.1 fix
+    self[attr_name] = val.to_s
   end
 end
 
