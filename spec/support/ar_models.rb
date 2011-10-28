@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   symbolize :other
   symbolize :language, :in => [:pt, :en]
   symbolize :sex, :in => [true, false], :scopes => true
-  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true
+  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true, :methods => true
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
     :mac   => 'Mac OS X',

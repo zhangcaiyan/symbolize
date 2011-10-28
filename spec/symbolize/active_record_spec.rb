@@ -13,6 +13,13 @@ describe "Symbolize" do
     u.errors.messages.should eql({})
   end
 
+  it "should work nice with default values from active model" do
+    u = User.create(:name => 'Niu' , :other => :bar, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+    u.errors.messages.should eql({})
+    u.status.should eql(:active)
+    u.should be_active
+  end
+
   describe "User Instantiated" do
     before(:each) do
       @user = User.create(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)

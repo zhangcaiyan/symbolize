@@ -1,7 +1,8 @@
 class CreateTestingStructure < ActiveRecord::Migration
   def change
     create_table :users do |t|
-      t.string :name, :so, :gui, :other, :status, :language, :kind
+      t.string :name, :so, :gui, :other, :language, :kind
+      t.string :status, :default => :active
       t.string :limited, :limit => 10
       t.string :karma, :limit => 5
       t.boolean :sex
