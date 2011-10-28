@@ -22,8 +22,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.add_development_dependency("i18n", ["~> 0.6.0"])
-  s.add_development_dependency("rspec", ["~> 2.6.0"])
-  s.add_development_dependency("mongoid", ["~> 2.3.1"])
-  s.add_development_dependency("active_record", ["~> 3.1.1"])
+  s.add_development_dependency("rspec", ["~> 2.7.0"])
+  s.add_development_dependency("mongoid", ["~> 2.3.0"])
+  s.add_development_dependency("activerecord", ["~> 3.1.1"])
 
 end

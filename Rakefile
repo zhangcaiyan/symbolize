@@ -7,21 +7,21 @@ require "rspec"
 require "rspec/core/rake_task"
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
-require "assetify/version"
+require "symbolize/version"
 
 task :gem => :build
 task :build do
-  system "gem build assetify.gemspec"
+  system "gem build symbolize.gemspec"
 end
 
 task :install => :build do
-  system "sudo gem install assetify-#{Assetify::VERSION}.gem"
+  system "sudo gem install symbolize-#{Symbolize::VERSION}.gem"
 end
 
 task :release => :build do
-  system "git tag -a v#{Assetify::VERSION} -m 'Tagging #{Assetify::VERSION}'"
+  system "git tag -a v#{Symbolize::VERSION} -m 'Tagging #{Symbolize::VERSION}'"
   system "git push --tags"
-  system "gem push assetify-#{Assetify::VERSION}.gem"
+  system "gem push symbolize-#{Symbolize::VERSION}.gem"
 end
 
 
