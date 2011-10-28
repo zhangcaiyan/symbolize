@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 require File.dirname(__FILE__) + '/../spec_helper_ar'
 
-# Test records
-User.create(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
-User.create!(:name => 'Bob' , :other => :bar,:status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
-
-
 describe "Symbolize" do
 
   it "should respond to symbolize" do
     ActiveRecord::Base.should respond_to :symbolize
   end
 
+  it "should have a valid blueprint" do
+    # Test records
+    u = User.create(:name => 'Bob' , :other => :bar,:status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+    u.errors.messages.should eql({})
+  end
+
   describe "User Instantiated" do
     before(:each) do
-      @user = User.first
+      @user = User.create(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
     end
 
     it "test_symbolize_string" do
