@@ -2,7 +2,6 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 require 'active_record'
 require 'symbolize/active_record'
-
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:") #'postgresql', :database => 'symbolize_test', :username => 'postgres')
 
 if ActiveRecord::VERSION::STRING >= "3.1"
@@ -12,6 +11,9 @@ else
   CreateTestingStructure.migrate(:up)
 end
 
+require 'support/ar_models'
+
 puts "Running AR #{ActiveRecord::VERSION::STRING}"
 # Spec::Runner.configure do |config|
 # end
+

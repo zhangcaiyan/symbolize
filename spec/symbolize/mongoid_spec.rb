@@ -1,55 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper_mongoid'
 
-#
-# Test model
-class Person
-  include Mongoid::Document
-  include Mongoid::Symbolize
-
-  symbolize :other
-  symbolize :language, :in => [:pt, :en]
-#  symbolize :sex, :in => [true, false], :scopes => true
-  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true
-  symbolize :so, :allow_blank => true, :in => {
-    :linux => 'Linux',
-    :mac   => 'Mac OS X',
-    :win   => 'Videogame'
-  }, :scopes => true
-  symbolize :gui, :allow_blank => true, :in => [:cocoa, :qt, :gtk], :i18n => false
-  symbolize :karma, :in => %w{good bad ugly}, :methods => true, :i18n => false, :allow_nil => true
-  symbolize :planet, :in => %w{earth centauri tatooine}, :default => :earth
- # symbolize :cool, :in => [true, false], :scopes => true
-
-  has_many :rights, :dependent => :destroy
-  has_many :extras, :dependent => :destroy, :class_name => "PersonExtra"
-  embeds_many :skills, :class_name => "PersonSkill"
-end
-
-class PersonSkill
-  include Mongoid::Document
-  include Mongoid::Symbolize
-  embedded_in :person, :inverse_of => :skills
-
-  symbolize :kind, :in => [:agility, :magic]
-end
-
-class PersonExtra
-  include Mongoid::Document
-  include Mongoid::Symbolize
-  belongs_to :person, :inverse_of => :extras
-
-  symbolize :key, :in => [:one, :another]
-end
-
-class Right
-  include Mongoid::Document
-  include Mongoid::Symbolize
-
-  validates_presence_of :name
-  symbolize :kind, :in => [:temp, :perm], :default => :perm
-end
-
 describe "Symbolize" do
 
   it "should be a module" do
@@ -279,6 +230,21 @@ describe "Symbolize" do
 
   end
 
+  describe "Scopes" do
+    it "should work under scope" do
+      # Person.with_scope({ :status => :inactive }) do
+      #   Person.all.map(&:name).should eql(['Bob'])
+      # end
+    end
+
+    it "should work under scope" do
+      Project.create(:name => "A", :state => :done)
+      Project.create(:name => "B", :state => :active)
+      Project.count.should eql(1)
+    end
+
+  end
+
   describe "Mongoid stuff" do
 
     it "test_symbolized_finder" do
@@ -287,12 +253,6 @@ describe "Symbolize" do
       Person.where({ :status => :inactive }).all.map(&:name).should eql(['Bob'])
       Person.where(status: :inactive).map(&:name).should eql(['Bob'])
     end
-
-    # it "should work under scope" do
-    #   Person.with_scope({ :status => :inactive }) do
-    #     Person.all.map(&:name).should eql(['Bob'])
-    #   end
-    # end
 
     describe "dirty tracking / changed flag" do
       before do

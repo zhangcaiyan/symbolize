@@ -6,4 +6,4 @@ Mongoid.configure do |config|
 end
 
 require 'symbolize/mongoid'
-
+require 'support/mongoid_models'
