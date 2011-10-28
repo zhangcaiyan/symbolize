@@ -27,5 +27,3 @@ Gem::Specification.new do |s|
   s.add_development_dependency("active_record", ["~> 3.1.1"])
 
 end
-
-
