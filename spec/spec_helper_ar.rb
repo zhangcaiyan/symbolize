@@ -17,3 +17,11 @@ puts "Running AR #{ActiveRecord::VERSION::STRING}"
 # Spec::Runner.configure do |config|
 # end
 
+RSpec.configure do |config|
+
+  config.after(:each) do
+    [User, Permission].each { |klass| klass.delete_all }
+  end
+
+end
+

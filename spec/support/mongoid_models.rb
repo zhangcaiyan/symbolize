@@ -50,11 +50,6 @@ class Right
 end
 
 
-require 'mongoid'
-Mongoid.configure do |config|
-  config.master = Mongo::Connection.new.db("foo_#{Time.now.to_i}")
-end
-
 class Project
   include Mongoid::Document
 

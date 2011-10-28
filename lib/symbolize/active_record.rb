@@ -99,16 +99,11 @@ module Symbolize
           if scopes
             scope_comm = lambda { |*args| ActiveRecord::VERSION::MAJOR >= 3 ? scope(*args) : named_scope(*args)}
             values.each do |value|
-              if value[0].respond_to?(:to_sym)
-                scope_comm.call value[0].to_sym, :conditions => { attr_name => value[1].to_s }
-              elsif ActiveRecord::VERSION::STRING <= "3.0"
-                if value[0] == true || value[0] == false
-                  scope_comm.call "with_#{attr_name}".to_sym,    :conditions => { attr_name => '1' }
-                  scope_comm.call "without_#{attr_name}".to_sym, :conditions => { attr_name => '0' }
-
-                  scope_comm.call attr_name.to_sym,   :conditions => { attr_name => '1' }
-                  scope_comm.call "not_#{attr_name}".to_sym, :conditions => { attr_name => '0' }
-                end
+              name = value[0]
+              if name.respond_to?(:to_sym)
+                scope_comm.call name.to_sym, :conditions => { attr_name => name }
+                # Figure out if this as another option, or default...
+                # scope_comm.call "not_#{attr_name}".to_sym, :conditions => { attr_name != name }
               end
             end
           end
