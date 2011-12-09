@@ -158,7 +158,7 @@ module Symbolize
   def read_i18n_attribute attr_name
     attr = read_attribute(attr_name)
     return nil if attr.nil?
-    I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}") #.to_sym rescue nila
+    I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.enums.#{attr_name}.#{attr}") #.to_sym rescue nila
   end
 
   # Write a symbolized value. Watch out for booleans.

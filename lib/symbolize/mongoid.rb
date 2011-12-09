@@ -130,7 +130,7 @@ module Mongoid
           if i18n # memoize call to translate... good idea?
             define_method "#{attr_name}_text" do
               return nil unless attr = read_attribute(attr_name)
-              I18n.t("mongoid.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}")
+              I18n.t("mongoid.attributes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.enums.#{attr_name}.#{attr}")
             end
           elsif enum
             class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")
