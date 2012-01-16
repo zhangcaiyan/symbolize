@@ -1,10 +1,10 @@
 require 'rubygems'
+# require 'pry'
 begin
   require 'spec'
 rescue LoadError
   require 'rspec'
 end
-require 'pry'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
