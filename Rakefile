@@ -11,16 +11,18 @@ desc "Builds the gem"
 task :gem => :build
 task :build do
   system "gem build symbolize.gemspec"
+  Dir.mkdir("pkg") unless Dir.exists?("pkg")
+  system "mv symbolize-#{Symbolize::VERSION}.gem pkg/"
 end
 
 task :install => :build do
-  system "sudo gem install symbolize-#{Symbolize::VERSION}.gem"
+  system "sudo gem install pkg/symbolize-#{Symbolize::VERSION}.gem"
 end
 
 task :release => :build do
   system "git tag -a v#{Symbolize::VERSION} -m 'Tagging #{Symbolize::VERSION}'"
   system "git push --tags"
-  system "gem push symbolize-#{Symbolize::VERSION}.gem"
+  system "gem push pkg/symbolize-#{Symbolize::VERSION}.gem"
 end
 
 
