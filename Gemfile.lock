@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    symbolize (4.1.0)
+    symbolize (4.2.0)
 
 GEM
   remote: http://rubygems.org/

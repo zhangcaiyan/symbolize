@@ -19,6 +19,7 @@ task :install => :build do
   system "sudo gem install pkg/symbolize-#{Symbolize::VERSION}.gem"
 end
 
+desc "Release the gem - Gemcutter"
 task :release => :build do
   system "git tag -a v#{Symbolize::VERSION} -m 'Tagging #{Symbolize::VERSION}'"
   system "git push --tags"
