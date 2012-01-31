@@ -1,34 +1,30 @@
 pt:
   activerecord:
-    attributes:
+    symbolizes:
       user:
-        enums:
-          language:
-            pt: Português
-            en: Inglês
-          sex:
-            "true": Feminino
-            "false": Masculino
+        language:
+          pt: Português
+          en: Inglês
+        sex:
+          "true": Feminino
+          "false": Masculino
       user_skill:
-        enums:
-          kind:
-            magic: Mágica
-            agility: Agilidade
+        kind:
+          magic: Mágica
+          agility: Agilidade
     errors:
       messages: &errors_messages
         record_invalid: Inválido
   mongoid:
-    attributes:
+    symbolizes:
       person:
-        enums:
-          language:
-            pt: Português
-            en: Inglês
-          sex:
-            "true": Feminino
-            "false": Masculino
+        language:
+          pt: Português
+          en: Inglês
+        sex:
+          "true": Feminino
+          "false": Masculino
       person_skill:
-        enums:
-          kind:
-            magic: Mágica
-            agility: Agilidade
+        kind:
+          magic: Mágica
+          agility: Agilidade

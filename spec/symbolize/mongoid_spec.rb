@@ -1,6 +1,74 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper_mongoid'
 
+
+#
+# Test model
+class Person
+  include Mongoid::Document
+  include Mongoid::Symbolize
+  include Mongoid::Timestamps
+
+  symbolize :other
+  symbolize :language, :in => [:pt, :en]
+#  symbolize :sex, :in => [true, false], :scopes => true
+  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true
+  symbolize :so, :allow_blank => true, :in => {
+    :linux => 'Linux',
+    :mac   => 'Mac OS X',
+    :win   => 'Videogame'
+  }, :scopes => true
+  symbolize :gui, :allow_blank => true, :in => [:cocoa, :qt, :gtk], :i18n => false
+  symbolize :karma, :in => %w{good bad ugly}, :methods => true, :i18n => false, :allow_nil => true
+  symbolize :planet, :in => %w{earth centauri tatooine}, :default => :earth
+  # symbolize :cool, :in => [true, false], :scopes => true
+
+  symbolize :year, :in => Time.now.year.downto(1980).to_a, :validate => false
+
+  has_many :rights, :dependent => :destroy
+  has_many :extras, :dependent => :destroy, :class_name => "PersonExtra"
+  embeds_many :skills, :class_name => "PersonSkill"
+end
+
+class PersonSkill
+  include Mongoid::Document
+  include Mongoid::Symbolize
+  embedded_in :person, :inverse_of => :skills
+
+  symbolize :kind, :in => [:agility, :magic]
+end
+
+class PersonExtra
+  include Mongoid::Document
+  include Mongoid::Symbolize
+  belongs_to :person, :inverse_of => :extras
+
+  symbolize :key, :in => [:one, :another]
+end
+
+class Right
+  include Mongoid::Document
+  include Mongoid::Symbolize
+
+  validates_presence_of :name
+  symbolize :kind, :in => [:temp, :perm], :default => :perm
+end
+
+
+class Project
+  include Mongoid::Document
+
+  field :name
+  field :state, :default => 'active'
+
+  # Comment 1 line and it works, both fails:
+  default_scope where(:state => 'active')
+ # scope :inactive, any_in(:state => [:done, :wip])
+  scope :dead, all_of(:state => :wip, :name => "zim")
+
+end
+
+
 describe "Symbolize" do
 
   it "should be a module" do
@@ -62,6 +130,14 @@ describe "Symbolize" do
     it "should get the correct values" do
       Person.get_status_values.should eql([["Active", :active],["Inactive", :inactive]])
       Person::STATUS_VALUES.should eql({ inactive: "Inactive", active: "Active"})
+    end
+
+    it "should have a human _text method" do
+      person.status_text.should eql("Active")
+    end
+
+    it "should work nice with i18n" do
+      person.language_text.should eql("Português")
     end
 
     it "test_symbolize_humanize" do

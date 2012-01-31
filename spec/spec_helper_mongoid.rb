@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 require 'mongoid'
+require 'mongoid/version'
 
 Mongoid.configure do |config|
   config.master = Mongo::Connection.new.db("symbolize_test")
@@ -11,7 +12,6 @@ Mongoid.database.collections.each do |collection|
   end
 end
 
-puts "Running Mongoid 2"
+puts "Running Mongoid #{Mongoid::VERSION}"
 
 require 'symbolize/mongoid'
-require 'support/mongoid_models'

@@ -11,7 +11,6 @@ else
   CreateTestingStructure.migrate(:up)
 end
 
-require 'support/ar_models'
 
 puts "Running AR #{ActiveRecord::VERSION::STRING}"
 # Spec::Runner.configure do |config|
