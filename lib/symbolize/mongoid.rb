@@ -27,12 +27,11 @@ module Mongoid
     # It will automattically lookup for i18n:
     #
     # models:
-    #   attributes:
+    #   symbolizes:
     #     user:
-    #       enums:
-    #         gender:
-    #           female: Girl
-    #           male: Boy
+    #       gender:
+    #         female: Girl
+    #         male: Boy
     #
     # You can skip i18n lookup with :i18n => false
     #   symbolize :gender, :in => [:female, :male], :i18n => false
@@ -58,8 +57,8 @@ module Mongoid
         i18n = configuration.delete(:i18n).nil? && !enum.instance_of?(Hash) && enum ? true : configuration[:i18n]
         scopes  = configuration.delete :scopes
         methods = configuration.delete :methods
-        capitalize = configuration.delete :capitalize
-        validation     = configuration.delete(:validation) != false
+        capitalize  = configuration.delete :capitalize
+        validation  = configuration.delete :validation
         default_opt = configuration.delete :default
 
         unless enum.nil?
@@ -89,7 +88,7 @@ module Mongoid
             const_set const.upcase, values unless const_defined? const.upcase
             ev = if i18n
                    # This one is a dropdown helper
-                   code =  "#{const.upcase}.map { |k,v| [I18n.t(\"mongoid.attributes.\#{ActiveSupport::Inflector.underscore(self.model_name)}.enums.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
+                   code =  "#{const.upcase}.map { |k,v| [I18n.t(\"mongoid.symbolizes.\#{ActiveSupport::Inflector.underscore(self.model_name)}.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
                    "def self.get_#{const}; #{code}; end;"
                  else
                    "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
@@ -130,7 +129,7 @@ module Mongoid
           if i18n # memoize call to translate... good idea?
             define_method "#{attr_name}_text" do
               return nil unless attr = read_attribute(attr_name)
-              I18n.t("mongoid.attributes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.enums.#{attr_name}.#{attr}")
+              I18n.t("mongoid.symbolizes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.#{attr_name}.#{attr}")
             end
           elsif enum
             class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")

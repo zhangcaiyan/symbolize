@@ -118,16 +118,15 @@ If you don`t provide a hash with values, it will try i18n:
     activerecord:
     or
     mongoid:
-      attributes:
+      symbolizes:
         user:
-          enums:
-            gui:
-              gnome: Gnome Desktop Enviroment
-              kde: K Desktop Enviroment
-              xfce: XFCE4
-            gender:
-              female: Girl
-              male: Boy
+          gui:
+            gnome: Gnome Desktop Enviroment
+            kde: K Desktop Enviroment
+            xfce: XFCE4
+          gender:
+            female: Girl
+            male: Boy
 
 
 You can skip i18n lookup with :i18n => false
