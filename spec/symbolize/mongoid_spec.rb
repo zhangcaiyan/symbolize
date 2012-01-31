@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper_mongoid'
 
-
 #
-# Test model
+# Test models
 class Person
   include Mongoid::Document
   include Mongoid::Symbolize
   include Mongoid::Timestamps
 
-  symbolize :other
+  symbolize :other, :i18n => false
   symbolize :language, :in => [:pt, :en]
-#  symbolize :sex, :in => [true, false], :scopes => true
+  symbolize :sex, :type => Boolean, :scopes => true
   symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
@@ -50,7 +49,7 @@ class Right
   include Mongoid::Document
   include Mongoid::Symbolize
 
-  validates_presence_of :name
+  validates :name, :presence => true
   symbolize :kind, :in => [:temp, :perm], :default => :perm
 end
 
@@ -76,9 +75,9 @@ describe "Symbolize" do
   end
 
   it "should instantiate" do
-    anna = Person.create(:name => 'Anna', :so => :mac, :gui => :cocoa, :language => :pt, :status => :active)
-    anna.should be_valid
-    # anna.errors.messages.should eql({})
+    anna = Person.create(:name => 'Anna', :so => :mac, :gui => :cocoa, :language => :pt, :status => :active, :sex => true)
+    #anna.should be_valid
+    anna.errors.messages.should eql({})
   end
 
   describe "Person Instantiated" do
@@ -106,19 +105,19 @@ describe "Symbolize" do
     #   # person.read_attribute(:status).should be_nil
     # end
 
-    # it "should acts nice with nil" do
-    #   person.status = nil
-    #   person.status.should be_nil
-    #   person.status_before_type_cast.should be_nil
-    #   person.read_attribute(:status).should be_nil
-    # end
+    it "should acts nice with nil" do
+      person.karma = nil
+      person.karma.should be_nil
+      person.save
+      person.read_attribute(:karma).should be_nil
+    end
 
-    # it "should acts nice with blank" do
-    #   person.status = ""
-    #   person.status.should be_nil
-    #   person.status_before_type_cast.should be_nil
-    #   person.read_attribute(:status).should be_nil
-    # end
+    it "should acts nice with blank" do
+      person.so = ""
+      person.so.should be_blank
+      person.save
+      person.read_attribute(:so).should be_blank
+    end
 
     it "should not validates other" do
       person.other = nil
@@ -228,17 +227,17 @@ describe "Symbolize" do
         Person::LANGUAGE_VALUES.should eql({:pt=>"pt", :en=>"en"})
       end
 
-      # it "should test boolean" do
-      #   person.sex_text.should eql("Feminino")
-      # end
+      it "should test boolean" do
+        person.sex_text.should eql("Feminino")
+      end
 
-      # it "should get the correct values" do
-      #   Person.get_sex_values.should eql([["Feminino", true],["Masculino", false]])
-      # end
+      it "should get the correct values" do
+        Person.get_sex_values.should eql([["Feminino", true],["Masculino", false]])
+      end
 
-      # it "should get the correct values" do
-      #   Person::SEX_VALUES.should eql({true=>"true", false=>"false"})
-      # end
+      it "should get the correct values" do
+        Person::SEX_VALUES.should eql({true=>"true", false=>"false"})
+      end
 
       it "should translate a multiword classname" do
         skill = PersonSkill.new(:kind => :magic)

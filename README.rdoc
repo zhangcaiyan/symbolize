@@ -66,7 +66,8 @@ Other examples:
     symbolize :browser, :in => [:firefox, :opera], :i18n => false, :methods => true
 
     # Scopes
-    symbolize :angry, :in => [true, false], :scopes => true
+    symbolize :angry, :in => [true, false], :scopes => true # AR
+    symbolize :angry, :type => Boolean, :scopes => true # Mongoid
 
     # Don`t validate
     symbolize :lang, :in => [:ruby, :js, :c, :erlang], :validate => false
@@ -101,8 +102,13 @@ In our User example, browser has this option, so you can do:
 
 === Booleans
 
-Its possible to use boolean fields also.
+Its possible to use boolean fields also. Looks better in Mongoid.
+
+  # ActiveRecord
   symbolize :switch, :in => [true, false]
+
+  # Mongoid
+  symbolize :switch, :type => Boolean
 
   ...
     switch:

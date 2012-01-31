@@ -54,12 +54,14 @@ module Mongoid
         configuration.update(attr_names.extract_options!)
 
         enum = configuration[:in] || configuration[:within]
-        i18n = configuration.delete(:i18n).nil? && !enum.instance_of?(Hash) && enum ? true : configuration[:i18n]
+        i18n = configuration.delete(:i18n).nil? && !enum.instance_of?(Hash) ? true : configuration[:i18n]
         scopes  = configuration.delete :scopes
         methods = configuration.delete :methods
         capitalize  = configuration.delete :capitalize
-        validation     = configuration.delete(:validate) != false
+        validation  = configuration.delete(:validate) != false
+        field_type  = configuration.delete :type
         default_opt = configuration.delete :default
+        enum = [true, false] if field_type == Boolean
 
         unless enum.nil?
 
@@ -69,7 +71,7 @@ module Mongoid
             #
             # Builds Mongoid 'field :name, type: type, :default'
             #
-            mongo_opts  = ", :type => Symbol"
+            mongo_opts  = ", :type => #{field_type || 'Symbol'}"
             mongo_opts += ", :default => :#{default_opt}" if default_opt
             class_eval("field :#{attr_name} #{mongo_opts}")
 
