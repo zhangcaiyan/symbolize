@@ -276,10 +276,6 @@ describe "Symbolize" do
 
   describe "more tests on Right" do
 
-    it "should use default value on object build" do
-      Right.new.kind.should eql(:perm)
-    end
-
     it "should not interfer on create" do
       Right.create!(:name => "p7", :kind => :temp)
       Right.where(name: "p7").first.kind.should eql(:temp)
@@ -304,6 +300,19 @@ describe "Symbolize" do
     end
 
   end
+
+  describe "Default Values" do
+
+    it "should use default value on object build" do
+      Right.new.kind.should eql(:perm)
+    end
+
+    it "should use default value in string" do
+      Project.new.state.should eql('active')
+    end
+
+  end
+
 
   describe "Scopes" do
     it "should work under scope" do
