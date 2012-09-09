@@ -9,6 +9,7 @@ class Person
   include Mongoid::Timestamps
 
   symbolize :other, :i18n => false
+
   symbolize :language, :in => [:pt, :en]
   symbolize :sex, :type => Boolean, :scopes => true
   symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true
@@ -27,6 +28,12 @@ class Person
   has_many :rights, :dependent => :destroy
   has_many :extras, :dependent => :destroy, :class_name => "PersonExtra"
   embeds_many :skills, :class_name => "PersonSkill"
+end
+
+class User
+  include Mongoid::Document
+  include Mongoid::Symbolize
+  symbolize :gender, :in => [:female, :male]
 end
 
 class PersonSkill
@@ -294,10 +301,11 @@ describe "Symbolize" do
 
     it "should work on create" do
       Right.create(:name => "p8")
-      Right.first(conditions: { name: "p8" }).kind.should eql(:perm)
+      Right.find_by(name: "p8").kind.should eql(:perm)
     end
 
     it "should work on edit" do
+      Right.create(:name => "p8")
       pm = Right.where(name: "p8").first
       pm.kind = :temp
       pm.save
@@ -344,7 +352,9 @@ describe "Symbolize" do
     end
 
     describe "dirty tracking / changed flag" do
+
       before do
+        Person.create!(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
         @anna = Person.where(name: 'Anna').first
       end
 
@@ -365,10 +375,17 @@ describe "Symbolize" do
         return_value.should == :pt
         @anna.language_changed?.should be_false
       end
+
+      it "should not create changes" do
+        User.create!(gender: :female)
+        user = User.last
+        user.gender = :female
+        user.changes.should eql({})
+      end
+
     end
 
 
   end
 
 end
-
