@@ -1,4 +1,4 @@
-= Symbolize attribute values
+= Symbolize (attribute values)
 
 This plugin introduces an easy way to use symbols for values of attributes.
 Symbolized attributes return a ruby symbol (or nil) as their value
@@ -35,22 +35,18 @@ On schema DBs, the attribute should be a string (varchar) column.
 
 ActiveRecord:
 
-    class User < ActiveRecord::Base
+    class Contact < ActiveRecord::Base
 
-      symbolize :gender, :in => [:female, :male], :scopes => true
+      symbolize :kind, :in => [:im, :mobile, :email], :scopes => true
 
-    end
 
 Mongoid:
 
-    class User
-
-      include Mongoid::Document
+    class Contact
       include Mongoid::Symbolize
 
-      symbolize :gender, :in => [:female, :male], :scopes => true
+      symbolize :kind, :in => [:im, :mobile, :email], :scopes => true
 
-    end
 
 Other examples:
 
@@ -217,15 +213,3 @@ Run the adapter independently:
 This fork:
 http://github.com/nofxx/symbolize
 
-
-Forked from:
-http://github.com/nuxlli/activerecord_symbolize
-
-
-Initial work:
-I've been using this for quite some time and made it a rails plugin now. More
-background iinformation can be found at
-http://zargony.com/2007/09/07/symbolize-attribute-values-in-activerecord
-
-
-Copyright (c) 2007-2008 Andreas Neuhaus, released under the MIT license
