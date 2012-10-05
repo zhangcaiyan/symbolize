@@ -1,7 +1,10 @@
+require 'active_support/concern'
+
 module Symbolize
-  def self.included base
-    base.extend(ClassMethods)
-  end
+end
+
+module Symbolize::ActiveRecord
+  extend ActiveSupport::Concern
 
   # Symbolize ActiveRecord attributes. Add
   #   symbolize :attr_name
@@ -168,5 +171,3 @@ module Symbolize
     self[attr_name] = val #.to_s
   end
 end
-
-ActiveRecord::Base.send(:include, Symbolize)

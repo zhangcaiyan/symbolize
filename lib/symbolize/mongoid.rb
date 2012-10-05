@@ -1,8 +1,8 @@
+require 'active_support/concern'
+
 module Mongoid
   module Symbolize
-    def self.included base
-      base.extend(ClassMethods)
-    end
+    extend ActiveSupport::Concern
 
     # Symbolize Mongoid attributes. Add:
     #   symbolize :attr_name
