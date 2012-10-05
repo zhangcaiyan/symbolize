@@ -146,3 +146,5 @@ module Mongoid
     end # ClassMethods
   end # Symbolize
 end # Mongoid
+
+Symbolize::Mongoid = Mongoid::Symbolize
