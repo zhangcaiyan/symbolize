@@ -62,8 +62,6 @@ module Symbolize::ActiveRecord
       default_option = configuration.delete :default
 
       unless enum.nil?
-        # Little monkeypatching, <1.8 Hashes aren't ordered.
-        hsh = RUBY_VERSION > '1.9' || !defined?("ActiveSupport") ? Hash : ActiveSupport::OrderedHash
 
         attr_names.each do |attr_name|
           attr_name = attr_name.to_s
@@ -71,7 +69,7 @@ module Symbolize::ActiveRecord
           if enum.is_a?(Hash)
             values = enum
           else
-            values = hsh.new
+            values = ActiveSupport::OrderedHash.new
             enum.map do |val|
               key = val.respond_to?(:to_sym) ? val.to_sym : val
               values[key] = capitalize ? val.to_s.capitalize : val.to_s
@@ -99,11 +97,10 @@ module Symbolize::ActiveRecord
           end
 
           if scopes
-            scope_comm = lambda { |*args| ActiveRecord::VERSION::MAJOR >= 3 ? scope(*args) : named_scope(*args)}
             values.each do |value|
               name = value[0]
               if name.respond_to?(:to_sym)
-                scope_comm.call name.to_sym, :conditions => { attr_name => name.to_s }
+                scope name.to_sym, :conditions => { attr_name => name.to_s }
                 # Figure out if this as another option, or default...
                 # scope_comm.call "not_#{attr_name}".to_sym, :conditions => { attr_name != name }
               end
@@ -160,7 +157,7 @@ module Symbolize::ActiveRecord
   def read_i18n_attribute attr_name
     attr = read_attribute(attr_name)
     return nil if attr.nil?
-    I18n.translate("activerecord.symbolizes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.#{attr_name}.#{attr}") #.to_sym rescue nila
+    I18n.translate("activerecord.symbolizes.#{self.class.model_name.underscore}.#{attr_name}.#{attr}") #.to_sym rescue nila
   end
 
   # Write a symbolized value. Watch out for booleans.
