@@ -55,7 +55,7 @@ module Mongoid
 
         enum = configuration[:in] || configuration[:within]
         i18n = configuration.delete(:i18n)
-        i18n = (!enum.instance_of?(Hash) && enum) if i18n.nil?
+        i18n = (!enum.instance_of?(Hash) && enum) if i18n.nl?
         scopes      = configuration.delete :scopes
         methods     = configuration.delete :methods
         capitalize  = configuration.delete :capitalize
@@ -132,7 +132,7 @@ module Mongoid
             define_method "#{attr_name}_text" do
               attr = read_attribute(attr_name)
               return nil if attr.nil?
-              I18n.t("mongoid.symbolizes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.#{attr_name}.#{attr}")
+              I18n.t("mongoid.symbolizes.#{self.class.model_name.underscore}.#{attr_name}.#{attr}")
             end
           elsif enum
             class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")
@@ -147,4 +147,4 @@ module Mongoid
   end # Symbolize
 end # Mongoid
 
-Symbolize::Mongoid = Mongoid::Symbolize
+# Symbolize::Mongoid = Mongoid::Symbolize
