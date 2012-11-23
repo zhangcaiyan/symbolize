@@ -11,7 +11,7 @@ class Person
   symbolize :other, :i18n => false
 
   symbolize :language, :in => [:pt, :en]
-  symbolize :sex, :type => Boolean, :scopes => true
+  symbolize :sex, :type => Boolean, :scopes => true, :i18n => true
   symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
@@ -259,6 +259,10 @@ describe "Symbolize" do
       it "should return the proper 'false' i18n if the attr value is false" do
         person = Person.new(:sex => false)
         person.sex_text.should == "Masculino"
+      end
+
+      it "should use i18n if i18n => true" do
+        person.sex_text.should eql("Feminino")
       end
 
     end
