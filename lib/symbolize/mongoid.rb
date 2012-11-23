@@ -107,10 +107,9 @@ module Mongoid
             end
 
             if scopes
-              scope_comm = lambda { |*args|  scope(*args)}
               values.each do |value|
                 if value[0].respond_to?(:to_sym)
-                  scope_comm.call value[0].to_sym, where({ attr_name => value[0].to_sym })
+                  scope value[0].to_sym, where({ attr_name => value[0].to_sym })
                 end
               end
             end
