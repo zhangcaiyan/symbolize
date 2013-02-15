@@ -72,11 +72,11 @@ module Mongoid
             #
             # Builds Mongoid 'field :name, type: type, :default'
             #
+            const       =  "#{attr_name}_values"
             mongo_opts  = ", :type => #{field_type || 'Symbol'}"
             mongo_opts += ", :default => :#{default_opt}" if default_opt
             class_eval("field :#{attr_name} #{mongo_opts}")
 
-            const =  "#{attr_name}_values"
             if enum.is_a?(Hash)
               values = enum
             else
@@ -100,28 +100,29 @@ module Mongoid
             class_eval "def self.#{attr_name}_enum; self.get_#{const}; end"
 
             if methods
-              values.each do |value|
-                define_method("#{value[0]}?") do
-                  self.send(attr_name) == value[0]
+              values.each do |k, v|
+                define_method("#{k}?") do
+                  self.send(attr_name) == k
                 end
               end
             end
 
             if scopes
-              values.each do |value|
-                if value[0].respond_to?(:to_sym)
-                  scope value[0].to_sym, where({ attr_name => value[0].to_sym })
+              values.each do |k, v|
+                if k.respond_to?(:to_sym)
+                  scope k.to_sym, where({ attr_name => k.to_sym })
                 end
               end
             end
 
             if validation
-              validation = "validates :#{attr_names.join(', :')}"
-              validation += ", :inclusion => { :in => #{values.keys.inspect} }"
-              validation += ", :allow_nil => true" if configuration[:allow_nil]
-              validation += ", :allow_blank => true" if configuration[:allow_blank]
-              class_eval validation
+              v = "validates :#{attr_names.join(', :')}"
+              v += ",:inclusion => { :in => #{values.keys.inspect} }"
+              v += ",:allow_nil => true"   if configuration[:allow_nil]
+              v += ",:allow_blank => true" if configuration[:allow_blank]
+              class_eval v
             end
+
           end
         end
 
