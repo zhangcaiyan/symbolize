@@ -253,7 +253,7 @@ describe "Symbolize" do
 
     end
 
-    describe "Methods" do
+    describe "Changes" do
 
       it "is dirty if you change the attribute value" do
         subject.language.should == :pt
@@ -269,7 +269,15 @@ describe "Symbolize" do
         subject.language_changed?.should be_false
 
         return_value = subject.language = :pt
-          return_value.should == :pt
+        return_value.should == :pt
+        subject.language_changed?.should be_false
+      end
+
+      it "is not dirty if you set the attribute value to the same value (string)" do
+        subject.language.should == :pt
+        subject.language_changed?.should be_false
+
+        return_value = subject.language = 'pt'
         subject.language_changed?.should be_false
       end
 
