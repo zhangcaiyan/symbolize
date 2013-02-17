@@ -27,6 +27,15 @@ On schema DBs, the attribute should be a string (varchar) column.
 
 == Usage
 
+Gemfile:
+
+    gem 'symbolize', :require => 'symbolize/mongoid'
+
+or
+
+    gem 'symbolize', :require => 'symbolize/active_record'
+
+
 ActiveRecord:
 
     class Contact < ActiveRecord::Base
