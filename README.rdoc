@@ -188,19 +188,6 @@ Somewhere on a view:
 
     = select_tag :kind, Coffee.get_genetic_values
 
-
-== View Helpers (DEPRECATED)
-
-
-  <% form_for @user do |f| %>
-    <%= f.radio_sym "gender" %>
-    <!-- Alphabetic order -->
-    <%= f.select_sym "so" %>
-    <!-- Fixed order -->
-    <%= f.select_sym "office" %>
-  <%end>
-
-
 == Specs
 
 Run the adapter independently:

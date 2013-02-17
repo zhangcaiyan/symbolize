@@ -359,6 +359,12 @@ describe "Symbolize" do
       Project.count.should eql(1)
     end
 
+    it "should set some scopes" do
+      Person.create(:name => 'Bob' , :other => :bar, :status => :active, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+      Person.status(:active).should be_a(Mongoid::Criteria)
+      Person.status(:active).count.should eq(1)
+    end
+
   end
 
   describe "Mongoid stuff" do
