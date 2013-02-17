@@ -116,8 +116,8 @@ module Mongoid
             end
 
             if validation
-              v = "validates :#{attr_names.join(', :')}"
-              v += ",:inclusion => { :in => #{values.keys.inspect} }"
+              v = "validates :#{attr_names.join(', :')}" +
+                ",:inclusion => { :in => #{values.keys.inspect} }"
               v += ",:allow_nil => true"   if configuration[:allow_nil]
               v += ",:allow_blank => true" if configuration[:allow_blank]
               class_eval v

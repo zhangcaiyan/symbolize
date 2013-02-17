@@ -98,6 +98,12 @@ describe "Symbolize" do
       person[:status].should eql(:active)
     end
 
+    it "should make strings symbols from initializer" do
+      other = Person.new(language: 'en', :so => :mac, :gui => :cocoa, :language => :pt, :sex => true, :status => 'active')
+      other[:status].should eq(:active)
+      other.status.should eq(:active)
+    end
+
     # it "should work nice with numbers" do
     #   pending
     #   person.status = 43
@@ -177,17 +183,6 @@ describe "Symbolize" do
       person.other_text.should eql("foo")
     end
 
-    it "should validate status" do
-      person.status = nil
-      person.should_not be_valid
-      person.should have(1).errors
-    end
-
-    it "should not validate so" do
-      person.so = nil
-      person.should be_valid
-    end
-
     it "should work with weird chars" do
       person.status = :"weird'; chars"
       person.status.should eql(:"weird'; chars")
@@ -203,20 +198,42 @@ describe "Symbolize" do
       person.skills.first.kind.should eql(:magic)
     end
 
-    # it "should play fine with null db columns" do
-    #   new_extra = person.extras.build
-    #   new_extra.should_not be_valid
-    # end
-
-    # it "should play fine with null db columns" do
-    #   new_extra = person.extras.build
-    #   new_extra.should_not be_valid
-    # end
-
     it "should default planet to earth" do
       Person.new.planet.should eql(:earth)
     end
 
+    describe "validation" do
+
+      it "should validate from initializer" do
+        other = Person.new(language: 'en', :so => :mac, :gui => :cocoa, :language => :pt, :sex => true, :status => 'active')
+        other.should be_valid
+        other.errors.messages.should eq({})
+      end
+
+      it "should validate nil" do
+        person.status = nil
+        person.should_not be_valid
+        person.errors.messages.should have_key(:status)
+      end
+
+      it "should validate not included" do
+        person.language = 'xx'
+        person.should_not be_valid
+        person.errors.messages.should have_key(:language)
+      end
+
+      it "should not validate so" do
+        person.so = nil
+        person.should be_valid
+      end
+
+      it "should validate ok" do
+        person.language = 'pt'
+        person.should be_valid
+        person.errors.messages.should eq({})
+      end
+
+    end
 
     describe "i18n" do
 
