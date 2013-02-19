@@ -13,11 +13,7 @@ and can be set using :symbols or "strings".
 
 === Gemfile
 
-    gem 'symbolize', :require => 'symbolize/mongoid'
-
-or
-
-    gem 'symbolize', :require => 'symbolize/active_record'
+    gem 'symbolize'
 
 
 == About
