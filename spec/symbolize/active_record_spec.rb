@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   symbolize :other
   symbolize :language, :in => [:pt, :en]
   symbolize :sex, :in => [true, false], :scopes => true
-  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true, :methods => true
+  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => :shallow, :methods => true
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
     :mac   => 'Mac OS X',
@@ -347,7 +347,7 @@ describe "Symbolize" do
     end
 
     it "should have other to test better" do
-      User.linux.should == [@anna]
+      User.so(:linux).should == [@anna]
     end
 
     # it "should have 'with' helper" do

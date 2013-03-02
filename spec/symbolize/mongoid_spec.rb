@@ -12,7 +12,7 @@ class Person
 
   symbolize :language, :in => [:pt, :en]
   symbolize :sex, :type => Boolean, :scopes => true, :i18n => true
-  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => true
+  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => :shallow
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
     :mac   => 'Mac OS X',
@@ -359,10 +359,21 @@ describe "Symbolize" do
       Project.count.should eql(1)
     end
 
+    it "should now shallow scoped scopes" do
+      Person.create(:name => 'Bob' , :other => :bar, :status => :active, :so => :linux, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+      Person.should_not respond_to(:status)
+    end
+
     it "should set some scopes" do
-      Person.create(:name => 'Bob' , :other => :bar, :status => :active, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
-      Person.status(:active).should be_a(Mongoid::Criteria)
-      Person.status(:active).count.should eq(1)
+      Person.create(:name => 'Bob' , :other => :bar, :status => :active, :so => :linux, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+      Person.so(:linux).should be_a(Mongoid::Criteria)
+      Person.so(:linux).count.should eq(1)
+    end
+
+    it "should work with a shallow scope too" do
+      Person.create!(:name => 'Bob' , :other => :bar, :status => :active, :so => :linux, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+      Person.active.should be_a(Mongoid::Criteria)
+      Person.active.count.should eq(1)
     end
 
   end

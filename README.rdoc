@@ -135,14 +135,16 @@ You can skip i18n lookup with :i18n => false
 
 === Scopes
 
-If you provide the scopes option, some fancy named scopes will be added:
-In our User example, gender has male/female options, so you can do:
+With the ':scopes => true' option, you may filter/read/write easily:
 
-    # AR
-    User.male    # => User.all(:conditions => { :gender => :male })
+    User.sex(:female).each ... # => User.where({ :gender => :female })
 
-    # Mongoid
-    User.female  # => User.where({ :gender => :female })
+
+Now, if you provide the ':scopes => :shallow' option, fancy named scopes
+will be added to the class directly. In our User example, gender has
+male/female options, so you can do:
+
+    User.female.each ...  # => User.where({ :gender => :female })
 
 
 You can chain named scopes as well:

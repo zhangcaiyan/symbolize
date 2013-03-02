@@ -108,8 +108,15 @@ module Mongoid
             end
 
             if scopes
-              # scoped scopes
-              scope attr_name, ->(enum) { where(attr_name => enum) }
+              if scopes == :shallow
+                values.each do |k, v|
+                  if k.respond_to?(:to_sym)
+                    scope k.to_sym, where({ attr_name => k })
+                  end
+                end
+              else # scoped scopes
+                scope attr_name, ->(enum) { where(attr_name => enum) }
+              end
             end
 
             if validation
