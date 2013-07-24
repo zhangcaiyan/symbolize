@@ -20,13 +20,4 @@ Gem::Specification.new do |s|
   s.rubygems_version = "1.3.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-
-  s.add_development_dependency("i18n", ["~> 0.6.0"])
-  s.add_development_dependency("rspec", [">= 2.8.0"])
-  s.add_development_dependency("mongoid", [">= 3.1.1"])
-  s.add_development_dependency("bson_ext", [">= 1.5.0"])
-  s.add_development_dependency("sqlite3", [">= 1.3.0"])
-  s.add_development_dependency("pg", [">= 0.12.2"])
-  s.add_development_dependency("activerecord", [">= 3.2.1"])
-  s.add_development_dependency "rake"
 end
