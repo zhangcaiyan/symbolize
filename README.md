@@ -1,4 +1,5 @@
-= Symbolize (attribute values)
+Symbolize (attribute values)
+=========
 
 This plugin introduces an easy way to use symbols for values of attributes.
 Symbolized attributes return a ruby symbol (or nil) as their value
@@ -8,19 +9,22 @@ and can be set using :symbols or "strings".
 [![Code Climate](https://codeclimate.com/github/nofxx/symbolize.png)](https://codeclimate.com/github/nofxx/symbolize)
 
 
-== Install
+Install
+-------
 
-=== Gem
+Gem
+
 
     gem install symbolize
 
 
-=== Gemfile
+Gemfile
 
     gem 'symbolize'
 
 
-== About
+About
+-----
 
 Just use "symbolize :attribute" in your model, and the specified
 attribute will return symbol values and can be set using symbols
@@ -29,7 +33,8 @@ attribute will return symbol values and can be set using symbols
 On schema DBs, the attribute should be a string (varchar) column.
 
 
-== Usage
+Usage
+-----
 
 
 ActiveRecord:
@@ -71,14 +76,16 @@ Other examples:
     symbolize :kind, :in => [:admin, :manager, :user], :default => :user
 
 
-=== in/within
+in/within
+---------
 
 You can provide a hash like for values allowed on the field, e.g.:
 {:value => "Human text"} or an array of keys to run i18n on.
 Booleans are also supported. See below.
 
 
-=== Validate
+Validate
+--------
 
 Set to false to avoid the validation of the input.
 Useful for a dropdown with an "other" option textfield.
@@ -88,7 +95,8 @@ Useful for a dropdown with an "other" option textfield.
 There's is also allow_(blank|nil): As you expect.
 
 
-=== method
+method
+------
 
 If you provide the method option, some fancy boolean methods will be added:
 In our User example, browser has this option, so you can do:
@@ -97,7 +105,8 @@ In our User example, browser has this option, so you can do:
     @user.opera?
 
 
-=== Booleans
+Booleans
+--------
 
 Its possible to use boolean fields also. Looks better in Mongoid.
 
@@ -114,7 +123,8 @@ Its possible to use boolean fields also. Looks better in Mongoid.
       "nil": Unknown
 
 
-=== i18n
+i18n
+----
 
 If you don`t provide a hash with values, it will try i18n:
 
@@ -137,7 +147,8 @@ You can skip i18n lookup with :i18n => false
     symbolize :style, :in => [:rock, :punk, :funk, :jazz], :i18n => false
 
 
-=== Scopes
+Scopes
+------
 
 With the ':scopes => true' option, you may filter/read/write easily:
 
@@ -163,7 +174,8 @@ For boolean colums you can use
     ( or with_[attribute] and without_[attribute] )
 
 
-=== Default
+Default
+-------
 
 As the name suggest, the symbol you choose as default will be set
 in new objects automatically. Mongoid only for now.
@@ -173,7 +185,8 @@ in new objects automatically. Mongoid only for now.
     User.new.mood # It may print :happy
 
 
-== Rails Form Example
+Rails Form Example
+------------------
 
 You may call `Class.get_<attribute>_values` anywhere to get a nice array.
 Works nice with dropdowns. Examples:
@@ -190,7 +203,8 @@ Somewhere on a view:
 
     = select_tag :kind, Coffee.get_genetic_values
 
-== Specs
+Specs
+-----
 
 Run the adapter independently:
 
@@ -198,7 +212,8 @@ Run the adapter independently:
     $ rspec spec/symbolize/active_record_spec.rb
 
 
-== Notes
+Notes
+-----
 
 This fork:
 http://github.com/nofxx/symbolize
