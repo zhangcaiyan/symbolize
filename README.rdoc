@@ -4,6 +4,10 @@ This plugin introduces an easy way to use symbols for values of attributes.
 Symbolized attributes return a ruby symbol (or nil) as their value
 and can be set using :symbols or "strings".
 
+[![Gem Version](https://badge.fury.io/rb/symbolize.png)](http://badge.fury.io/rb/symbolize)
+[![Code Climate](https://codeclimate.com/github/nofxx/symbolize.png)](https://codeclimate.com/github/nofxx/symbolize)
+
+
 == Install
 
 === Gem
