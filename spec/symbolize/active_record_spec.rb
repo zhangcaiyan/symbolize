@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-require File.dirname(__FILE__) + '/../spec_helper_ar'
+require 'spec_helper'
 
 #
 # Test model

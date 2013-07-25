@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-require 'spec_helper_mongoid'
+require 'spec_helper'
 
 #
 # Test models
