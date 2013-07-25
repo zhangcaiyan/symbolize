@@ -5,7 +5,9 @@ gem "rake"
 
 group :test do
   gem 'rspec'
-  gem 'bson_ext'
+  if RUBY_PLATFORM !~ /\bjava\b/
+    gem 'bson_ext'
+  end
   gem 'mongoid'
   gem 'pg'
   gem 'i18n' #, '0.6.1'
