@@ -14,10 +14,12 @@ Gem::Specification.new do |s|
   s.email       = "x@nofxx.com"
   s.license     = 'MIT'
 
-  s.files = Dir.glob("{lib,spec}/**/*") + %w(README.rdoc Rakefile)
+  s.files = Dir.glob("{lib,spec}/**/*") + %w(README.md Rakefile)
   s.require_path = "lib"
 
   s.rubygems_version = "1.3.7"
+  s.add_dependency("activesupport", ["~> 3.2"])
+  s.add_dependency("activemodel", ["~> 3.2"])
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 end
