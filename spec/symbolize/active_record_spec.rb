@@ -313,6 +313,23 @@ describe "Symbolize" do
         expect(subject.language_changed?).to be false
       end
 
+      it "is not dirty if you set the default attribute value to the same value" do
+        user = User.create!(:language => :pt, :sex => true, :cool => true)
+        expect(user.status).to eq(:active)
+        expect(user).not_to be_changed
+
+        user.status = :active
+        expect(user).not_to be_changed
+      end
+
+      it "is not dirty if you set the default attribute value to the same value (string)" do
+        user = User.create!(:language => :pt, :sex => true, :cool => true)
+        expect(user.status).to eq(:active)
+        expect(user).not_to be_changed
+
+        user.status = 'active'
+        expect(user).not_to be_changed
+      end
     end
 
   end
