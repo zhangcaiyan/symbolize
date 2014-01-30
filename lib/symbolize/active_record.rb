@@ -6,6 +6,12 @@ end
 module Symbolize::ActiveRecord
   extend ActiveSupport::Concern
 
+  included do
+    # Returns an array of all the attributes that have been specified for symbolization
+    class_attribute :symbolized_attributes, :instance_reader => false
+    self.symbolized_attributes = []
+  end
+
   # Symbolize ActiveRecord attributes. Add
   #   symbolize :attr_name
   # to your model class, to make an attribute return symbols instead of
@@ -49,10 +55,6 @@ module Symbolize::ActiveRecord
     # Specifies that values of the given attributes should be returned
     # as symbols. The table column should be created of type string.
 
-    def symbolized_attributes
-      @symbolized_attributes ||= []
-    end
-
     def symbolize *attr_names
       configuration = {}
       configuration.update(attr_names.extract_options!)
@@ -69,7 +71,6 @@ module Symbolize::ActiveRecord
 
         attr_names.each do |attr_name|
           attr_name = attr_name.to_s
-          symbolized_attributes << attr_name
           const =  "#{attr_name}_values"
           if enum.is_a?(Hash)
             values = enum
@@ -154,6 +155,10 @@ module Symbolize::ActiveRecord
           class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
         end
       end
+
+      # merge new symbolized attribute and create a new array to ensure that each class in inheritance hierarchy
+      # has its own array of symbolized attributes
+      self.symbolized_attributes += attr_names.map(&:to_s)
     end
 
     # Hook used by Rails to do extra stuff to attributes when they are initialized.

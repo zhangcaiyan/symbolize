@@ -38,6 +38,10 @@ class Permission < ActiveRecord::Base
   symbolize :lvl, :in => (1..9).to_a, :i18n => false#, :default => 1
 end
 
+class PermissionSubclass < Permission
+  symbolize :sub_lvl
+end
+
 describe "Symbolize" do
 
   it "should respond to symbolize" do
@@ -55,6 +59,14 @@ describe "Symbolize" do
     expect(u.errors.messages).to be_blank
     expect(u.status).to eql(:active)
     expect(u).to be_active
+  end
+
+  describe ".symbolized_attributes" do
+    it "returns the symbolized attribute for the class" do
+      expect(UserExtra.symbolized_attributes).to eq ['key']
+      expect(Permission.symbolized_attributes).to match_array ['kind', 'lvl']
+      expect(PermissionSubclass.symbolized_attributes).to match_array ['kind', 'lvl', 'sub_lvl']
+    end
   end
 
   describe "User Instantiated" do
