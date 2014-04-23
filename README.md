@@ -154,7 +154,7 @@ Scopes
 
 With the ':scopes => true' option, you may filter/read/write easily:
 
-    User.sex(:female).each ... # => User.where({ :gender => :female })
+    User.gender(:female).each ... # => User.where({ :gender => :female })
 
 
 Now, if you provide the ':scopes => :shallow' option, fancy named scopes
