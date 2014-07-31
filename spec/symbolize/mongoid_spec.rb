@@ -74,13 +74,13 @@ end
 describe "Symbolize" do
 
   it "should be a module" do
-    Mongoid.const_defined?("Symbolize").should be_true
+    expect(Mongoid.const_defined?("Symbolize")).to be true
   end
 
   it "should instantiate" do
     anna = Person.create(:name => 'Anna', :so => :mac, :gui => :cocoa, :language => :pt, :status => :active, :sex => true)
     #anna.should be_valid
-    anna.errors.messages.should eql({})
+    expect(anna.errors.messages).to eql({})
   end
 
   describe "Person Instantiated" do
@@ -88,22 +88,22 @@ describe "Symbolize" do
 
     it "test_symbolize_string" do
       person.status = 'inactive'
-      person.status.should eql(:inactive)
-      person.read_attribute(:status).should eql(:inactive)
+      expect(person.status).to eql(:inactive)
+      expect(person.read_attribute(:status)).to eql(:inactive)
     end
 
     it "test_symbolize_symbol" do
       person.status = :active
-      person.status.should eql(:active)
+      expect(person.status).to eql(:active)
       person.save
-      person.status.should eql(:active)
-      person[:status].should eql(:active)
+      expect(person.status).to eql(:active)
+      expect(person[:status]).to eql(:active)
     end
 
     it "should make strings symbols from initializer" do
       other = Person.new(language: 'en', :so => :mac, :gui => :cocoa, :language => :pt, :sex => true, :status => 'active')
-      other[:status].should eq(:active)
-      other.status.should eq(:active)
+      expect(other[:status]).to eq(:active)
+      expect(other.status).to eq(:active)
     end
 
     # it "should work nice with numbers" do
@@ -116,123 +116,123 @@ describe "Symbolize" do
 
     it "should acts nice with nil" do
       person.karma = nil
-      person.karma.should be_nil
+      expect(person.karma).to be_nil
       person.save
-      person.read_attribute(:karma).should be_nil
+      expect(person.read_attribute(:karma)).to be_nil
     end
 
     it "should acts nice with blank" do
       person.so = ""
-      person.so.should be_blank
+      expect(person.so).to be_blank
       person.save
-      person.read_attribute(:so).should be_blank
+      expect(person.read_attribute(:so)).to be_blank
     end
 
     it "should not validates other" do
       person.other = nil
-      person.should be_valid
+      expect(person).to be_valid
       person.other = ""
-      person.should be_valid
+      expect(person).to be_valid
     end
 
     it "should get the correct values" do
-      Person.get_status_values.should eql([["Active", :active],["Inactive", :inactive]])
-      Person::STATUS_VALUES.should eql({ inactive: "Inactive", active: "Active"})
+      expect(Person.get_status_values).to eql([["Active", :active],["Inactive", :inactive]])
+      expect(Person::STATUS_VALUES).to eql({ inactive: "Inactive", active: "Active"})
     end
 
     it "should get the values for RailsAdmin" do
-      Person.status_enum.should eql([["Active", :active],["Inactive", :inactive]])
+      expect(Person.status_enum).to eql([["Active", :active],["Inactive", :inactive]])
     end
 
     it "should have a human _text method" do
-      person.status_text.should eql("Active")
+      expect(person.status_text).to eql("Active")
     end
 
     it "should work nice with i18n" do
-      person.language_text.should eql("Português")
+      expect(person.language_text).to eql("Português")
     end
 
     it "test_symbolize_humanize" do
-      person.status_text.should eql("Active")
+      expect(person.status_text).to eql("Active")
     end
 
     it "should get the correct values" do
-      Person.get_gui_values.should =~ [["cocoa", :cocoa], ["qt", :qt], ["gtk", :gtk]]
-      Person::GUI_VALUES.should eql({cocoa: "cocoa",  qt: "qt",  gtk: "gtk"})
+      expect(Person.get_gui_values).to match_array([["cocoa", :cocoa], ["qt", :qt], ["gtk", :gtk]])
+      expect(Person::GUI_VALUES).to eql({cocoa: "cocoa",  qt: "qt",  gtk: "gtk"})
     end
 
     it "test_symbolize_humanize" do
-      person.gui_text.should eql("qt")
+      expect(person.gui_text).to eql("qt")
     end
 
     it "should get the correct values" do
-      Person.get_so_values.should =~ [["Linux", :linux], ["Mac OS X", :mac], ["Videogame", :win]]
-      Person::SO_VALUES.should eql({linux: "Linux", mac: "Mac OS X", win: "Videogame"})
+      expect(Person.get_so_values).to match_array([["Linux", :linux], ["Mac OS X", :mac], ["Videogame", :win]])
+      expect(Person::SO_VALUES).to eql({linux: "Linux", mac: "Mac OS X", win: "Videogame"})
     end
 
     it "test_symbolize_humanize" do
-      person.so_text.should eql("Linux")
+      expect(person.so_text).to eql("Linux")
     end
 
     it "test_symbolize_humanize" do
       person.so = :mac
-      person.so_text.should eql("Mac OS X")
+      expect(person.so_text).to eql("Mac OS X")
     end
 
     it "should stringify" do
-      person.other_text.should eql("fo")
+      expect(person.other_text).to eql("fo")
       person.other = :foo
-      person.other_text.should eql("foo")
+      expect(person.other_text).to eql("foo")
     end
 
     it "should work with weird chars" do
       person.status = :"weird'; chars"
-      person.status.should eql(:"weird'; chars")
+      expect(person.status).to eql(:"weird'; chars")
     end
 
     it "should work fine through relations" do
       person.extras.create(:key => :one)
-      PersonExtra.first.key.should eql(:one)
+      expect(PersonExtra.first.key).to eql(:one)
     end
 
     it "should work fine through embeds" do
       person.skills.create(:kind => :magic)
-      person.skills.first.kind.should eql(:magic)
+      expect(person.skills.first.kind).to eql(:magic)
     end
 
     it "should default planet to earth" do
-      Person.new.planet.should eql(:earth)
+      expect(Person.new.planet).to eql(:earth)
     end
 
     describe "validation" do
 
       it "should validate from initializer" do
         other = Person.new(language: 'en', :so => :mac, :gui => :cocoa, :language => :pt, :sex => true, :status => 'active')
-        other.should be_valid
-        other.errors.messages.should eq({})
+        expect(other).to be_valid
+        expect(other.errors.messages).to eq({})
       end
 
       it "should validate nil" do
         person.status = nil
-        person.should_not be_valid
-        person.errors.messages.should have_key(:status)
+        expect(person).not_to be_valid
+        expect(person.errors.messages).to have_key(:status)
       end
 
       it "should validate not included" do
         person.language = 'xx'
-        person.should_not be_valid
-        person.errors.messages.should have_key(:language)
+        expect(person).not_to be_valid
+        expect(person.errors.messages).to have_key(:language)
       end
 
       it "should not validate so" do
         person.so = nil
-        person.should be_valid
+        expect(person).to be_valid
       end
 
       it "should validate ok" do
         person.language = 'pt'
-        person.should be_valid
-        person.errors.messages.should eq({})
+        expect(person).to be_valid
+        expect(person.errors.messages).to eq({})
       end
 
     end
@@ -240,46 +240,46 @@ describe "Symbolize" do
     describe "i18n" do
 
       it "should test i18n ones" do
-        person.language_text.should eql("Português")
+        expect(person.language_text).to eql("Português")
       end
 
       it "should get the correct values" do
-        Person.get_language_values.should =~ [["Português", :pt], ["Inglês", :en]]
+        expect(Person.get_language_values).to match_array([["Português", :pt], ["Inglês", :en]])
       end
 
       it "should get the correct values" do
-        Person::LANGUAGE_VALUES.should eql({:pt=>"pt", :en=>"en"})
+        expect(Person::LANGUAGE_VALUES).to eql({:pt=>"pt", :en=>"en"})
       end
 
       it "should test boolean" do
-        person.sex_text.should eql("Feminino")
+        expect(person.sex_text).to eql("Feminino")
       end
 
       it "should get the correct values" do
-        Person.get_sex_values.should eql([["Feminino", true],["Masculino", false]])
+        expect(Person.get_sex_values).to eql([["Feminino", true],["Masculino", false]])
       end
 
       it "should get the correct values" do
-        Person::SEX_VALUES.should eql({true=>"true", false=>"false"})
+        expect(Person::SEX_VALUES).to eql({true=>"true", false=>"false"})
       end
 
       it "should translate a multiword classname" do
         skill = PersonSkill.new(:kind => :magic)
-        skill.kind_text.should eql("Mágica")
+        expect(skill.kind_text).to eql("Mágica")
       end
 
       it "should return nil if there's no value" do
         skill = PersonSkill.new(:kind => nil)
-        skill.kind_text.should be_nil
+        expect(skill.kind_text).to be_nil
       end
 
       it "should return the proper 'false' i18n if the attr value is false" do
         person = Person.new(:sex => false)
-        person.sex_text.should == "Masculino"
+        expect(person.sex_text).to eq("Masculino")
       end
 
       it "should use i18n if i18n => true" do
-        person.sex_text.should eql("Feminino")
+        expect(person.sex_text).to eql("Feminino")
       end
 
     end
@@ -287,20 +287,20 @@ describe "Symbolize" do
     describe "Methods" do
 
       it "should play nice with other stuff" do
-        person.karma.should be_nil
-        Person::KARMA_VALUES.should eql({:bad => "bad", :ugly => "ugly", :good => "good"})
+        expect(person.karma).to be_nil
+        expect(Person::KARMA_VALUES).to eql({:bad => "bad", :ugly => "ugly", :good => "good"})
       end
 
       it "should provide a boolean method" do
-        person.should_not be_good
+        expect(person).not_to be_good
         person.karma = :ugly
-        person.should be_ugly
+        expect(person).to be_ugly
       end
 
       it "should work" do
         person.karma = "good"
-        person.should be_good
-        person.should_not be_bad
+        expect(person).to be_good
+        expect(person).not_to be_bad
       end
 
     end
@@ -311,18 +311,18 @@ describe "Symbolize" do
 
     it "should not interfer on create" do
       Right.create!(:name => "p7", :kind => :temp)
-      Right.where(name: "p7").first.kind.should eql(:temp)
+      expect(Right.where(name: "p7").first.kind).to eql(:temp)
     end
 
     it "should work on create" do
       pm = Right.new(:name => "p7")
-      pm.should be_valid
-      pm.save.should be_true
+      expect(pm).to be_valid
+      expect(pm.save).to be true
     end
 
     it "should work on create" do
       Right.create(:name => "p8")
-      Right.find_by(name: "p8").kind.should eql(:perm)
+      expect(Right.find_by(name: "p8").kind).to eql(:perm)
     end
 
     it "should work on edit" do
@@ -330,7 +330,7 @@ describe "Symbolize" do
       pm = Right.where(name: "p8").first
       pm.kind = :temp
       pm.save
-      Right.where(name: "p8").first.kind.should eql(:temp)
+      expect(Right.where(name: "p8").first.kind).to eql(:temp)
     end
 
   end
@@ -338,11 +338,11 @@ describe "Symbolize" do
   describe "Default Values" do
 
     it "should use default value on object build" do
-      Right.new.kind.should eql(:perm)
+      expect(Right.new.kind).to eql(:perm)
     end
 
     it "should use default value in string" do
-      Project.new.state.should eql('active')
+      expect(Project.new.state).to eql('active')
     end
 
   end
@@ -358,24 +358,24 @@ describe "Symbolize" do
     it "should work under scope" do
       Project.create(:name => "A", :state => :done)
       Project.create(:name => "B", :state => :active)
-      Project.count.should eql(1)
+      expect(Project.count).to eql(1)
     end
 
     it "should now shallow scoped scopes" do
       Person.create(:name => 'Bob' , :other => :bar, :status => :active, :so => :linux, :gui => :gtk, :language => :en, :sex => false, :cool => false)
-      Person.should_not respond_to(:status)
+      expect(Person).not_to respond_to(:status)
     end
 
     it "should set some scopes" do
       Person.create(:name => 'Bob' , :other => :bar, :status => :active, :so => :linux, :gui => :gtk, :language => :en, :sex => false, :cool => false)
-      Person.so(:linux).should be_a(Mongoid::Criteria)
-      Person.so(:linux).count.should eq(1)
+      expect(Person.so(:linux)).to be_a(Mongoid::Criteria)
+      expect(Person.so(:linux).count).to eq(1)
     end
 
     it "should work with a shallow scope too" do
       Person.create!(:name => 'Bob' , :other => :bar, :status => :active, :so => :linux, :gui => :gtk, :language => :en, :sex => false, :cool => false)
-      Person.active.should be_a(Mongoid::Criteria)
-      Person.active.count.should eq(1)
+      expect(Person.active).to be_a(Mongoid::Criteria)
+      expect(Person.active.count).to eq(1)
     end
 
   end
@@ -385,8 +385,8 @@ describe "Symbolize" do
     it "test_symbolized_finder" do
       Person.create(:name => 'Bob' , :other => :bar, :status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
 
-      Person.where({ :status => :inactive }).all.map(&:name).should eql(['Bob'])
-      Person.where(status: :inactive).map(&:name).should eql(['Bob'])
+      expect(Person.where({ :status => :inactive }).all.map(&:name)).to eql(['Bob'])
+      expect(Person.where(status: :inactive).map(&:name)).to eql(['Bob'])
     end
 
     describe "dirty tracking / changed flag" do
@@ -397,21 +397,21 @@ describe "Symbolize" do
       end
 
       it "is dirty if you change the attribute value" do
-        @anna.language.should == :pt
-        @anna.language_changed?.should be_false
+        expect(@anna.language).to eq(:pt)
+        expect(@anna.language_changed?).to be false
 
         return_value = @anna.language = :en
-        return_value.should == :en
-        @anna.language_changed?.should be_true
+        expect(return_value).to eq(:en)
+        expect(@anna.language_changed?).to be true
       end
 
       it "is not dirty if you set the attribute value to the same value it was originally" do
-        @anna.language.should == :pt
-        @anna.language_changed?.should be_false
+        expect(@anna.language).to eq(:pt)
+        expect(@anna.language_changed?).to be false
 
         return_value = @anna.language = :pt
-        return_value.should == :pt
-        @anna.language_changed?.should be_false
+        expect(return_value).to eq(:pt)
+        expect(@anna.language_changed?).to be false
       end
 
     end
