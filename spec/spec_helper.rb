@@ -10,10 +10,10 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'i18n'
-I18n.load_path += Dir[File.join(File.dirname(__FILE__), "locales", "*.{rb,yml}")]
-I18n.default_locale = "pt"
+I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'locales', '*.{rb,yml}')]
+I18n.default_locale = 'pt'
 
-if ENV["CI"]
+if ENV['CI']
   require 'coveralls'
   Coveralls.wear!
 end
@@ -21,13 +21,13 @@ end
 #
 # Mongoid
 #
-unless ENV["ONLY_AR"]
+unless ENV['ONLY_AR']
 
   require 'mongoid'
   puts "Using Mongoid v#{Mongoid::VERSION}"
 
   Mongoid.configure do |config|
-    #config.master = Mongo::Connection.new.db("symbolize_test")
+    # config.master = Mongo::Connection.new.db("symbolize_test")
     config.connect_to('symbolize_test')
   end
 
@@ -40,11 +40,10 @@ unless ENV["ONLY_AR"]
   end
 end
 
-
 #
 # ActiveRecord
 #
-unless ENV["ONLY_MONGOID"]
+unless ENV['ONLY_MONGOID']
 
   require 'active_record'
   require 'symbolize/active_record'
@@ -53,16 +52,14 @@ unless ENV["ONLY_MONGOID"]
 
   ActiveRecord::Base.send :include, Symbolize::ActiveRecord # this is normally done by the railtie
 
-  ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:") #'postgresql', :database => 'symbolize_test', :username => 'postgres')
+  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:') # 'postgresql', :database => 'symbolize_test', :username => 'postgres')
 
-
-  if ActiveRecord::VERSION::STRING >= "3.1"
-    ActiveRecord::Migrator.migrate("spec/db")
+  if ActiveRecord::VERSION::STRING >= '3.1'
+    ActiveRecord::Migrator.migrate('spec/db')
   else
-    require "db/001_create_testing_structure"
+    require 'db/001_create_testing_structure'
     CreateTestingStructure.migrate(:up)
   end
-
 
   # Spec::Runner.configure do |config|
   # end
@@ -70,7 +67,7 @@ unless ENV["ONLY_MONGOID"]
   RSpec.configure do |config|
 
     config.after(:each) do
-      [User, Permission].each { |klass| klass.delete_all }
+      [User, Permission].each(&:delete_all)
     end
 
   end

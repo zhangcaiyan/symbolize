@@ -25,4 +25,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mongoid'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '>= 3'
+  s.add_development_dependency 'rubocop'
 end

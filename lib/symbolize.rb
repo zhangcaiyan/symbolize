@@ -1,4 +1,3 @@
-# Todo: is this the best way for AR?
 module Symbolize
   autoload :ActiveRecord, 'symbolize/active_record'
 end

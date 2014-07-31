@@ -49,7 +49,7 @@ module Mongoid
       # Specifies that values of the given attributes should be returned
       # as symbols. The table column should be created of type string.
 
-      def symbolize *attr_names
+      def symbolize(*attr_names)
         configuration = {}
         configuration.update(attr_names.extract_options!)
 
@@ -90,36 +90,36 @@ module Mongoid
             # Get the values of :in
             const_set const.upcase, values unless const_defined? const.upcase
             ev = if i18n
-                   # This one is a dropdown helper
-                   code =  "#{const.upcase}.map { |k,v| [I18n.t(\"mongoid.symbolizes.\#{ActiveSupport::Inflector.underscore(self.model_name)}.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
-                   "def self.get_#{const}; #{code}; end;"
-                 else
-                   "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
-                 end
+              # This one is a dropdown helper
+              code =  "#{const.upcase}.map { |k,v| [I18n.t(\"mongoid.symbolizes.\#{ActiveSupport::Inflector.underscore(self.model_name)}.#{attr_name}.\#{k}\"), k] }" # .to_sym rescue nila
+              "def self.get_#{const}; #{code}; end;"
+            else
+              "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
+            end
             class_eval(ev)
             class_eval "def self.#{attr_name}_enum; self.get_#{const}; end"
 
             if methods
-              values.each do |k, v|
+              values.each do |k, _v|
                 define_method("#{k}?") do
-                  self.send(attr_name) == k
+                  send(attr_name) == k
                 end
               end
             end
 
             if scopes
               if scopes == :shallow
-                values.each do |k, v|
+                values.each do |k, _v|
                   next unless k.respond_to?(:to_sym)
                   scope k.to_sym, -> { where(attr_name => k) }
                 end
               else # scoped scopes
-                scope attr_name, ->(enum) { where(attr_name => enum) }
+                scope attr_name, ->(val) { where(attr_name => val) }
               end
             end
 
             if validation
-              v = "validates :#{attr_names.join(', :')}" +
+              v = "validates :#{attr_names.join(', :')}" \
                 ",:inclusion => { :in => #{values.keys.inspect} }"
               v += ',:allow_nil => true'   if configuration[:allow_nil]
               v += ',:allow_blank => true' if configuration[:allow_blank]
@@ -145,9 +145,7 @@ module Mongoid
             class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
           end
         end
-
       end
-
     end # ClassMethods
   end # Symbolize
 end # Mongoid
