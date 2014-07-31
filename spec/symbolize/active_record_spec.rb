@@ -325,11 +325,10 @@ describe "Symbolize" do
 
     it "test_symbolized_finder" do
       User.where({ :status => :inactive }).all.map(&:name).should eql(['Mary'])
-      User.find_all_by_status(:inactive).map(&:name).should eql(['Mary'])
     end
 
-    it "test_symbolized_with_scope" do
-      User.with_scope(:find => { :conditions => { :status => :inactive }}) do
+    it "test_symbolized_scoping" do
+      User.where({ :status => :inactive }).scoping do
         User.all.map(&:name).should eql(['Mary'])
       end
     end
