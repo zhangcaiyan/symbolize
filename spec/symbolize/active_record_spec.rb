@@ -38,14 +38,6 @@ class Permission < ActiveRecord::Base
   symbolize :lvl, :in => (1..9).to_a, :i18n => false#, :default => 1
 end
 
-# Make with_scope public-usable for testing
-#if ActiveRecord::VERSION::MAJOR < 3
-class << ActiveRecord::Base
-  public :with_scope
-end
-#end
-
-
 describe "Symbolize" do
 
   it "should respond to symbolize" do
