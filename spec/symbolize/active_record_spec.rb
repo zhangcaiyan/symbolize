@@ -129,10 +129,6 @@ describe "Symbolize" do
       it { expect(subject.read_attribute(:status)).to be_nil }
     end
 
-    describe "test_symbols_quoted_id" do
-      skip { expect(subject.status.quoted_id).to eql("'active'") }
-    end
-
     it "should not validates other" do
       subject.other = nil
       expect(subject).to be_valid
@@ -211,8 +207,6 @@ describe "Symbolize" do
     it "test_symbols_with_weird_chars_quoted_id" do
       subject.status = :"weird'; chars"
       expect(subject.status_before_type_cast).to eql(:"weird'; chars")
-      #    assert_equal "weird'; chars", @user.read_attribute(:status)
-      #   assert_equal "'weird''; chars'", @user.status.quoted_id
     end
 
     it "should work fine through relations" do
