@@ -7,6 +7,7 @@ class Person
   include Mongoid::Document
   include Mongoid::Symbolize
   include Mongoid::Timestamps
+  include Mongoid::Attributes::Dynamic
 
   symbolize :other, :i18n => false
 
@@ -49,6 +50,7 @@ end
 class Right
   include Mongoid::Document
   include Mongoid::Symbolize
+  include Mongoid::Attributes::Dynamic
 
   validates :name, :presence => true
   symbolize :kind, :in => [:temp, :perm], :default => :perm
@@ -62,9 +64,9 @@ class Project
   field :state, :default => 'active'
 
   # Comment 1 line and it works, both fails:
-  default_scope where(:state => 'active')
- # scope :inactive, any_in(:state => [:done, :wip])
-  scope :dead, all_of(:state => :wip, :name => "zim")
+  default_scope -> { where(:state => 'active') }
+  scope :inactive, -> { any_in(:state => [:done, :wip]) }
+  scope :dead, -> { all_of(:state => :wip, :name => 'zim') }
 
 end
 

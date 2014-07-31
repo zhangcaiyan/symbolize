@@ -62,7 +62,7 @@ module Mongoid
         validation  = configuration.delete(:validate) != false
         field_type  = configuration.delete :type
         default_opt = configuration.delete :default
-        enum = [true, false] if field_type == Boolean
+        enum = [true, false] if [Boolean, ::Boolean].include?(field_type)
 
         unless enum.nil?
 
