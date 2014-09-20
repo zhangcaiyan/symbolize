@@ -114,18 +114,32 @@ describe "Symbolize" do
     #   # person.read_attribute(:status).should be_nil
     # end
 
-    it "should acts nice with nil" do
+    it "should acts nice with nil when reading" do
       person.karma = nil
       expect(person.karma).to be_nil
       person.save
       expect(person.read_attribute(:karma)).to be_nil
     end
 
-    it "should acts nice with blank" do
+    it "should acts nice with nil #symbol_text" do
+      person.karma = nil
+      expect(person.karma).to be_nil
+      person.save
+      expect(person.karma_text).to be_nil
+    end
+
+    it "should acts nice with blank when reading" do
       person.so = ""
       expect(person.so).to be_blank
       person.save
       expect(person.read_attribute(:so)).to be_blank
+    end
+
+    it "should acts nice with blank #symbol_text" do
+      person.so = ""
+      expect(person.so).to be_blank
+      person.save
+      expect(person.so_text).to be_nil
     end
 
     it "should not validates other" do
