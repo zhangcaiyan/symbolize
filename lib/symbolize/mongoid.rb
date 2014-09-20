@@ -161,7 +161,6 @@ module Mongoid
       t = self.class.i18n_translation_for(attr_name, read_attribute(attr_name))
       t.is_a?(Hash) ? nil : t
     end
-
   end # Symbolize
 end # Mongoid
 
