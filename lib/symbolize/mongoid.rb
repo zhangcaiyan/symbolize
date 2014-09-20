@@ -70,17 +70,14 @@ module Mongoid
           attr_name_str = attr_name.to_s
 
           if enum
-            enum_hash = if enum.is_a?(Hash)
+            enum_hash = \
+            if enum.is_a?(Hash)
               enum
             else
-              Hash[
-                enum.map do |val|
-                  [
-                    val.respond_to?(:to_sym) ? val.to_sym : val,
-                    capitalize ? val.to_s.capitalize : val.to_s,
-                  ]
-                end
-              ]
+              enum.each_with_object({}) do |val, hsh|
+                hsh.store(val.respond_to?(:to_sym) ? val.to_sym : val,
+                          capitalize ? val.to_s.capitalize : val.to_s)
+              end
             end
 
             #
@@ -98,8 +95,7 @@ module Mongoid
             const_set values_const_name, enum_hash unless const_defined? values_const_name
 
             [
-              'get_' + values_name,
-              attr_name_str + '_enum',
+              'get_' + values_name, attr_name_str + '_enum'
             ].each do |enum_method_name|
 
               define_singleton_method(enum_method_name) do
@@ -162,10 +158,10 @@ module Mongoid
 
     # Return an attribute's i18n
     def read_i18n_attribute(attr_name)
-      unless (t = self.class.i18n_translation_for(attr_name, read_attribute(attr_name))).is_a?(Hash)
-        t
-      end
+      t = self.class.i18n_translation_for(attr_name, read_attribute(attr_name))
+      t.is_a?(Hash) ? nil : t
     end
+
   end # Symbolize
 end # Mongoid
 
