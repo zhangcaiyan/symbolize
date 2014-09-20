@@ -72,7 +72,7 @@ module Mongoid
             #
             # Builds Mongoid 'field :name, type: type, :default'
             #
-            const       =  "#{attr_name}_values"
+            const       = "#{attr_name}_values"
             mongo_opts  = ", :type => #{field_type || 'Symbol'}"
             mongo_opts += ", :default => :#{default_opt}" if default_opt
             class_eval("field :#{attr_name} #{mongo_opts}")
@@ -110,9 +110,8 @@ module Mongoid
             if scopes
               if scopes == :shallow
                 values.each do |k, v|
-                  if k.respond_to?(:to_sym)
-                    scope k.to_sym, -> { where(attr_name => k) }
-                  end
+                  next unless k.respond_to?(:to_sym)
+                  scope k.to_sym, -> { where(attr_name => k) }
                 end
               else # scoped scopes
                 scope attr_name, ->(enum) { where(attr_name => enum) }
@@ -122,8 +121,8 @@ module Mongoid
             if validation
               v = "validates :#{attr_names.join(', :')}" +
                 ",:inclusion => { :in => #{values.keys.inspect} }"
-              v += ",:allow_nil => true"   if configuration[:allow_nil]
-              v += ",:allow_blank => true" if configuration[:allow_blank]
+              v += ',:allow_nil => true'   if configuration[:allow_nil]
+              v += ',:allow_blank => true' if configuration[:allow_blank]
               class_eval v
             end
 
