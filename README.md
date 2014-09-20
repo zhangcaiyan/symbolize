@@ -143,6 +143,9 @@ If you don`t provide a hash with values, it will try i18n:
             female: Girl
             male: Boy
 
+In some cases, if automatic lookup failes, you may want to try to translate it manully
+
+    user.get_gender_text   # here gender is symbolized field
 
 You can skip i18n lookup with :i18n => false
 
@@ -154,7 +157,7 @@ Scopes
 
 With the ':scopes => true' option, you may filter/read/write easily:
 
-    User.sex(:female).each ... # => User.where({ :gender => :female })
+    User.gender(:female).each ... # => User.where({ :gender => :female })
 
 
 Now, if you provide the ':scopes => :shallow' option, fancy named scopes
