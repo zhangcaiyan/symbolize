@@ -1,4 +1,5 @@
 require 'active_support/concern'
+require 'active_support/core_ext/hash/keys'
 
 module Mongoid
   module Symbolize
@@ -49,106 +50,122 @@ module Mongoid
       # Specifies that values of the given attributes should be returned
       # as symbols. The table column should be created of type string.
 
-      def symbolize *attr_names
-        configuration = {}
-        configuration.update(attr_names.extract_options!)
+      def symbolize(*attr_names)
+        configuration = attr_names.extract_options!
+        configuration.assert_valid_keys(:in, :within, :i18n, :scopes, :methods, :capitalize, :validate, :default, :allow_blank, :allow_nil, :type)
 
-        enum = configuration[:in] || configuration[:within]
-        i18n = configuration.delete(:i18n)
-        i18n = (!enum.instance_of?(Hash) && enum) if i18n.nil?
-        scopes      = configuration.delete :scopes
-        methods     = configuration.delete :methods
-        capitalize  = configuration.delete :capitalize
-        validation  = configuration.delete(:validate) != false
-        field_type  = configuration.delete :type
-        default_opt = configuration.delete :default
-        enum = [true, false] if [Boolean, ::Boolean].include?(field_type)
+        enum           = configuration[:in] || configuration[:within]
+        i18n           = configuration[:i18n]
+        i18n           = enum && !enum.is_a?(Hash) if i18n.nil?
+        scopes         = configuration[:scopes]
+        methods        = configuration[:methods]
+        capitalize     = configuration[:capitalize]
+        validation     = configuration[:validate] != false
+        default_option = configuration[:default]
 
-        unless enum.nil?
+        field_type     = configuration[:type] || Symbol
+        enum           = [true, false] if [Boolean, ::Boolean].include?(field_type)
 
-          attr_names.each do |attr_name|
-            # attr_name = attr_name.to_s
+        attr_names.each do |attr_name|
+          attr_name_str = attr_name.to_s
+
+          if enum
+            enum_hash = if enum.is_a?(Hash)
+              enum
+            else
+              Hash[
+                enum.map do |val|
+                  [
+                    val.respond_to?(:to_sym) ? val.to_sym : val,
+                    capitalize ? val.to_s.capitalize : val.to_s,
+                  ]
+                end
+              ]
+            end
 
             #
             # Builds Mongoid 'field :name, type: type, :default'
             #
-            const       = "#{attr_name}_values"
-            mongo_opts  = ", :type => #{field_type || 'Symbol'}"
-            mongo_opts += ", :default => :#{default_opt}" if default_opt
-            class_eval("field :#{attr_name} #{mongo_opts}")
+            { :type => field_type }.tap do |field_opts|
+              field_opts.merge!(:default => default_option) if default_option
+              field attr_name, field_opts
+            end
 
-            if enum.is_a?(Hash)
-              values = enum
-            else
-              values = {}
-              enum.map do |val|
-                key = val.respond_to?(:to_sym) ? val.to_sym : val
-                values[key] = capitalize ? val.to_s.capitalize : val.to_s
+            values_name = attr_name_str + '_values'
+            values_const_name = values_name.upcase
+
+            # Get the values of :in
+            const_set values_const_name, enum_hash unless const_defined? values_const_name
+
+            [
+              'get_' + values_name,
+              attr_name_str + '_enum',
+            ].each do |enum_method_name|
+
+              define_singleton_method(enum_method_name) do
+                if i18n
+                  enum_hash.each_key.map do |symbol|
+                    [i18n_translation_for(attr_name_str, symbol), symbol]
+                  end
+                else
+                  enum_hash.map(&:reverse)
+                end
               end
             end
 
-            # Get the values of :in
-            const_set const.upcase, values unless const_defined? const.upcase
-            ev = if i18n
-                   # This one is a dropdown helper
-                   code =  "#{const.upcase}.map { |k,v| [I18n.t(\"mongoid.symbolizes.\#{ActiveSupport::Inflector.underscore(self.model_name)}.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
-                   "def self.get_#{const}; #{code}; end;"
-                 else
-                   "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
-                 end
-            class_eval(ev)
-            class_eval "def self.#{attr_name}_enum; self.get_#{const}; end"
-
             if methods
-              values.each do |k, v|
-                define_method("#{k}?") do
-                  self.send(attr_name) == k
+              enum_hash.each_key do |key|
+                define_method("#{key}?") do
+                  send(attr_name_str) == key.to_sym
                 end
               end
             end
 
             if scopes
               if scopes == :shallow
-                values.each do |k, v|
-                  next unless k.respond_to?(:to_sym)
-                  scope k.to_sym, -> { where(attr_name => k) }
+                enum_hash.each_key do |name|
+                  next unless name.respond_to?(:to_sym)
+                  scope name, -> { where(attr_name_str => name) }
                 end
               else # scoped scopes
-                scope attr_name, ->(enum) { where(attr_name => enum) }
+                scope attr_name_str, ->(val) { where(attr_name_str => val) }
               end
             end
 
             if validation
-              v = "validates :#{attr_names.join(', :')}" +
-                ",:inclusion => { :in => #{values.keys.inspect} }"
-              v += ',:allow_nil => true'   if configuration[:allow_nil]
-              v += ',:allow_blank => true' if configuration[:allow_blank]
-              class_eval v
+              validates(*attr_names, configuration.slice(:allow_nil, :allow_blank).merge(:inclusion => { :in => enum_hash.keys }))
             end
+          end
 
+          #
+          # Creates <attribute>_text helper, human text for attribute.
+          #
+          define_method(attr_name_str + '_text') do
+            if i18n
+              read_i18n_attribute(attr_name_str)
+            else
+              attr_value = send(attr_name_str)
+              if enum
+                enum_hash[attr_value]
+              else
+                attr_value.to_s
+              end
+            end
+          end
+
+          def i18n_translation_for(attr_name, attr_value)
+            I18n.translate("mongoid.symbolizes.#{model_name.to_s.underscore}.#{attr_name}.#{attr_value}")
           end
         end
-
-        #
-        # Creates <attribute>_text helper, human text for attribute.
-        #
-        attr_names.each do |attr_name|
-          if i18n # memoize call to translate... good idea?
-            define_method "#{attr_name}_text" do
-              attr = read_attribute(attr_name)
-              return nil if attr.nil?
-              I18n.t("mongoid.symbolizes.#{self.class.model_name.to_s.underscore}.#{attr_name}.#{attr}")
-            end
-          elsif enum
-            class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")
-          else
-            class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
-          end
-        end
-
       end
-
     end # ClassMethods
+
+    # Return an attribute's i18n
+    def read_i18n_attribute(attr_name)
+      unless (t = self.class.i18n_translation_for(attr_name, read_attribute(attr_name))).is_a?(Hash)
+        t
+      end
+    end
   end # Symbolize
 end # Mongoid
 

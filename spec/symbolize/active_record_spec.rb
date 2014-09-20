@@ -7,21 +7,21 @@ class User < ActiveRecord::Base
   symbolize :other
   symbolize :language, :in => [:pt, :en]
   symbolize :sex, :in => [true, false], :scopes => true
-  symbolize :status , :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => :shallow, :methods => true
+  symbolize :status, :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => :shallow, :methods => true
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
-    :mac   => 'Mac OS X',
-    :win   => 'Videogame'
-  }, :scopes => true
+    :mac => 'Mac OS X',
+    :win => 'Videogame',
+  },             :scopes => true
   symbolize :gui, :allow_blank => true, :in => [:cocoa, :qt, :gtk], :i18n => false
-  symbolize :karma, :in => %w{ good bad ugly}, :methods => true, :i18n => false, :allow_nil => true
+  symbolize :karma, :in => %w(good bad ugly), :methods => true, :i18n => false, :allow_nil => true
   symbolize :cool, :in => [true, false], :scopes => true
 
   symbolize :role, :in => [:reader, :writer, :some_existing_attr], :i18n => false, :methods => true, :default => :reader
   symbolize :country, :in => [:us, :gb, :pt, :ru], :capitalize => true, :i18n => false  # note: the default value is provided in db migration
 
-  has_many :extras, :dependent => :destroy, :class_name => "UserExtra"
-  has_many :access, :dependent => :destroy, :class_name => "UserAccess"
+  has_many :extras, :dependent => :destroy, :class_name => 'UserExtra'
+  has_many :access, :dependent => :destroy, :class_name => 'UserAccess'
 end
 
 class UserSkill < ActiveRecord::Base
@@ -35,48 +35,48 @@ end
 class Permission < ActiveRecord::Base
   validates_presence_of :name
   symbolize :kind, :in => [:temp, :perm], :default => :perm
-  symbolize :lvl, :in => (1..9).to_a, :i18n => false#, :default => 1
+  symbolize :lvl, :in => (1..9).to_a, :i18n => false # , :default => 1
 end
 
 class PermissionSubclass < Permission
   symbolize :sub_lvl
 end
 
-describe "Symbolize" do
+describe 'Symbolize' do
 
-  it "should respond to symbolize" do
+  it 'should respond to symbolize' do
     expect(ActiveRecord::Base).to respond_to :symbolize
   end
 
-  it "should have a valid blueprint" do
+  it 'should have a valid blueprint' do
     # Test records
-    u = User.create(:name => 'Bob' , :other => :bar,:status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+    u = User.create(:name => 'Bob', :other => :bar, :status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
     expect(u.errors.messages).to be_blank
   end
 
-  it "should work nice with default values from active model" do
-    u = User.create(:name => 'Niu' , :other => :bar, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+  it 'should work nice with default values from active model' do
+    u = User.create(:name => 'Niu', :other => :bar, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
     expect(u.errors.messages).to be_blank
     expect(u.status).to eql(:active)
     expect(u).to be_active
   end
 
-  describe ".symbolized_attributes" do
-    it "returns the symbolized attribute for the class" do
+  describe '.symbolized_attributes' do
+    it 'returns the symbolized attribute for the class' do
       expect(UserExtra.symbolized_attributes).to eq ['key']
-      expect(Permission.symbolized_attributes).to match_array ['kind', 'lvl']
-      expect(PermissionSubclass.symbolized_attributes).to match_array ['kind', 'lvl', 'sub_lvl']
+      expect(Permission.symbolized_attributes).to match_array %w(kind lvl)
+      expect(PermissionSubclass.symbolized_attributes).to match_array %w(kind lvl sub_lvl)
     end
   end
 
-  describe "User Instantiated" do
-    subject {
+  describe 'User Instantiated' do
+    subject do
       User.create(:name => 'Anna', :other => :fo, :status => status, :so => so, :gui => :qt, :language => :pt, :sex => true, :cool => true)
-    }
+    end
     let(:status) { :active }
     let(:so) { :linux }
 
-    describe "test_symbolize_string" do
+    describe 'test_symbolize_string' do
       let(:status) { 'inactive' }
 
       describe '#status' do
@@ -87,7 +87,7 @@ describe "Symbolize" do
       # @user.read_attribute(:status).should eql('inactive')
     end
 
-    describe "test_symbolize_symbol" do
+    describe 'test_symbolize_symbol' do
       describe '#status' do
         subject { super().status }
         it { is_expected.to eq(:active) }
@@ -100,7 +100,7 @@ describe "Symbolize" do
       # @user.read_attribute(:status).should eql('active')
     end
 
-    describe "should work nice with numbers" do
+    describe 'should work nice with numbers' do
       let(:status) { 43 }
 
       describe '#status' do
@@ -111,7 +111,7 @@ describe "Symbolize" do
       # @user.read_attribute(:status).should be_nil
     end
 
-    describe "should acts nice with nil" do
+    describe 'should acts nice with nil' do
       let(:status) { nil }
 
       describe '#status' do
@@ -126,8 +126,8 @@ describe "Symbolize" do
       it { expect(subject.read_attribute(:status)).to be_nil }
     end
 
-    describe "should acts nice with blank" do
-      let(:status) { "" }
+    describe 'should acts nice with blank' do
+      let(:status) { '' }
 
       describe '#status' do
         subject { super().status }
@@ -141,69 +141,69 @@ describe "Symbolize" do
       it { expect(subject.read_attribute(:status)).to be_nil }
     end
 
-    it "should not validates other" do
+    it 'should not validates other' do
       subject.other = nil
       expect(subject).to be_valid
-      subject.other = ""
+      subject.other = ''
       expect(subject).to be_valid
     end
 
-    it "should get the correct values" do
-      expect(User.get_status_values).to eql([["Active", :active],["Inactive", :inactive]])
-      expect(User::STATUS_VALUES).to eql({:inactive=>"Inactive", :active=>"Active"})
+    it 'should get the correct values' do
+      expect(User.get_status_values).to eql([['Active', :active], ['Inactive', :inactive]])
+      expect(User::STATUS_VALUES).to eql(:inactive => 'Inactive', :active => 'Active')
     end
 
-    it "should get the values for RailsAdmin" do
-      expect(User.status_enum).to eql([["Active", :active],["Inactive", :inactive]])
+    it 'should get the values for RailsAdmin' do
+      expect(User.status_enum).to eql([['Active', :active], ['Inactive', :inactive]])
     end
 
-    describe "test_symbolize_humanize" do
+    describe 'test_symbolize_humanize' do
       describe '#status_text' do
         subject { super().status_text }
-        it { is_expected.to eql("Active") }
+        it { is_expected.to eql('Active') }
       end
     end
 
-    it "should get the correct values" do
-      expect(User.get_gui_values).to match_array([["cocoa", :cocoa], ["qt", :qt], ["gtk", :gtk]])
-      expect(User::GUI_VALUES).to eql({:cocoa=>"cocoa", :qt=>"qt", :gtk=>"gtk"})
+    it 'should get the correct values' do
+      expect(User.get_gui_values).to match_array([['cocoa', :cocoa], ['qt', :qt], ['gtk', :gtk]])
+      expect(User::GUI_VALUES).to eql(:cocoa => 'cocoa', :qt => 'qt', :gtk => 'gtk')
     end
 
-    describe "test_symbolize_humanize" do
+    describe 'test_symbolize_humanize' do
       describe '#gui_text' do
         subject { super().gui_text }
-        it { is_expected.to eql("qt") }
+        it { is_expected.to eql('qt') }
       end
     end
 
-    it "should get the correct values" do
-      expect(User.get_so_values).to match_array([["Linux", :linux], ["Mac OS X", :mac], ["Videogame", :win]])
-      expect(User::SO_VALUES).to eql({:linux => "Linux", :mac => "Mac OS X", :win => "Videogame"})
+    it 'should get the correct values' do
+      expect(User.get_so_values).to match_array([['Linux', :linux], ['Mac OS X', :mac], ['Videogame', :win]])
+      expect(User::SO_VALUES).to eql(:linux => 'Linux', :mac => 'Mac OS X', :win => 'Videogame')
     end
 
-    describe "test_symbolize_humanize" do
+    describe 'test_symbolize_humanize' do
       describe '#so_text' do
         subject { super().so_text }
-        it { is_expected.to eql("Linux") }
+        it { is_expected.to eql('Linux') }
       end
     end
 
-    describe "test_symbolize_humanize" do
+    describe 'test_symbolize_humanize' do
       let(:so) { :mac }
 
       describe '#so_text' do
         subject { super().so_text }
-        it { is_expected.to eql("Mac OS X") }
+        it { is_expected.to eql('Mac OS X') }
       end
     end
 
-    it "should stringify" do
-      expect(subject.other_text).to eql("fo")
+    it 'should stringify' do
+      expect(subject.other_text).to eql('fo')
       subject.other = :foo
-      expect(subject.other_text).to eql("foo")
+      expect(subject.other_text).to eql('foo')
     end
 
-    describe "should validate status" do
+    describe 'should validate status' do
       let(:status) { nil }
       it { is_expected.not_to be_valid }
       it 'has 1 error' do
@@ -211,62 +211,62 @@ describe "Symbolize" do
       end
     end
 
-    it "should not validate so" do
+    it 'should not validate so' do
       subject.so = nil
       expect(subject).to be_valid
     end
 
-    it "test_symbols_with_weird_chars_quoted_id" do
+    it 'test_symbols_with_weird_chars_quoted_id' do
       subject.status = :"weird'; chars"
       expect(subject.status_before_type_cast).to eql(:"weird'; chars")
     end
 
-    it "should work fine through relations" do
+    it 'should work fine through relations' do
       subject.extras.create(:key => :one)
       expect(UserExtra.first.key).to eql(:one)
     end
 
-    it "should play fine with null db columns" do
+    it 'should play fine with null db columns' do
       new_extra = subject.extras.build
       expect(new_extra).not_to be_valid
     end
 
-    it "should play fine with null db columns" do
+    it 'should play fine with null db columns' do
       new_extra = subject.extras.build
       expect(new_extra).not_to be_valid
     end
 
-    describe "i18n" do
+    describe 'i18n' do
 
-      it "should test i18n ones" do
-        expect(subject.language_text).to eql("Português")
+      it 'should test i18n ones' do
+        expect(subject.language_text).to eql('Português')
       end
 
-      it "should get the correct values" do
-        expect(User.get_language_values).to match_array([["Português", :pt], ["Inglês", :en]])
+      it 'should get the correct values' do
+        expect(User.get_language_values).to match_array([['Português', :pt], ['Inglês', :en]])
       end
 
-      it "should get the correct values" do
-        expect(User::LANGUAGE_VALUES).to eql({:pt=>"pt", :en=>"en"})
+      it 'should get the correct values' do
+        expect(User::LANGUAGE_VALUES).to eql(:pt => 'pt', :en => 'en')
       end
 
-      it "should test boolean" do
-        expect(subject.sex_text).to eql("Feminino")
+      it 'should test boolean' do
+        expect(subject.sex_text).to eql('Feminino')
         subject.sex = false
         expect(subject.sex_text).to eql('Masculino')
       end
 
-      it "should get the correct values" do
-        expect(User.get_sex_values).to eql([["Feminino", true],["Masculino", false]])
+      it 'should get the correct values' do
+        expect(User.get_sex_values).to eql([['Feminino', true], ['Masculino', false]])
       end
 
-      it "should get the correct values" do
-        expect(User::SEX_VALUES).to eql({true=>"true", false=>"false"})
+      it 'should get the correct values' do
+        expect(User::SEX_VALUES).to eql(true => 'true', false => 'false')
       end
 
-      it "should translate a multiword class" do
+      it 'should translate a multiword class' do
         @skill = UserSkill.create(:kind => :magic)
-        expect(@skill.kind_text).to eql("Mágica")
+        expect(@skill.kind_text).to eql('Mágica')
       end
 
       it "should return nil if there's no value" do
@@ -276,30 +276,30 @@ describe "Symbolize" do
 
     end
 
-    describe "Methods" do
+    describe 'Methods' do
 
-      it "should play nice with other stuff" do
+      it 'should play nice with other stuff' do
         expect(subject.karma).to be_nil
-        expect(User::KARMA_VALUES).to eql({:bad => "bad", :ugly => "ugly", :good => "good"})
+        expect(User::KARMA_VALUES).to eql(:bad => 'bad', :ugly => 'ugly', :good => 'good')
       end
 
-      it "should provide a boolean method" do
+      it 'should provide a boolean method' do
         expect(subject).not_to be_good
         subject.karma = :ugly
         expect(subject).to be_ugly
       end
 
-      it "should work" do
-        subject.karma = "good"
+      it 'should work' do
+        subject.karma = 'good'
         expect(subject).to be_good
         expect(subject).not_to be_bad
       end
 
     end
 
-    describe "Changes" do
+    describe 'Changes' do
 
-      it "is dirty if you change the attribute value" do
+      it 'is dirty if you change the attribute value' do
         expect(subject.language).to eq(:pt)
         expect(subject.language_changed?).to be false
 
@@ -308,7 +308,7 @@ describe "Symbolize" do
         expect(subject.language_changed?).to be true
       end
 
-      it "is not dirty if you set the attribute value to the same value" do
+      it 'is not dirty if you set the attribute value to the same value' do
         expect(subject.language).to eq(:pt)
         expect(subject.language_changed?).to be false
 
@@ -317,15 +317,15 @@ describe "Symbolize" do
         expect(subject.language_changed?).to be false
       end
 
-      it "is not dirty if you set the attribute value to the same value (string)" do
+      it 'is not dirty if you set the attribute value to the same value (string)' do
         expect(subject.language).to eq(:pt)
         expect(subject.language_changed?).to be false
 
-        return_value = subject.language = 'pt'
+        subject.language = 'pt'
         expect(subject.language_changed?).to be false
       end
 
-      it "is not dirty if you set the default attribute value to the same value" do
+      it 'is not dirty if you set the default attribute value to the same value' do
         user = User.create!(:language => :pt, :sex => true, :cool => true)
         expect(user.status).to eq(:active)
         expect(user).not_to be_changed
@@ -334,7 +334,7 @@ describe "Symbolize" do
         expect(user).not_to be_changed
       end
 
-      it "is not dirty if you set the default attribute value to the same value (string)" do
+      it 'is not dirty if you set the default attribute value to the same value (string)' do
         user = User.create!(:language => :pt, :sex => true, :cool => true)
         expect(user.status).to eq(:active)
         expect(user).not_to be_changed
@@ -346,67 +346,67 @@ describe "Symbolize" do
 
   end
 
-  describe "more tests on Permission" do
+  describe 'more tests on Permission' do
 
-    it "should use default value on object build" do
+    it 'should use default value on object build' do
       expect(Permission.new.kind).to eql(:perm)
     end
 
-    it "should not interfer on create" do
-      Permission.create!(:name => "p7", :kind =>:temp, :lvl => 7)
-      expect(Permission.find_by_name("p7").kind).to eql(:temp)
+    it 'should not interfer on create' do
+      Permission.create!(:name => 'p7', :kind => :temp, :lvl => 7)
+      expect(Permission.find_by_name('p7').kind).to eql(:temp)
     end
 
-    it "should work on create" do
-      pm = Permission.new(:name => "p7", :lvl => 7)
+    it 'should work on create' do
+      pm = Permission.new(:name => 'p7', :lvl => 7)
       expect(pm).to be_valid
       expect(pm.save).to be true
     end
 
-    it "should work on create" do
-      Permission.create!(:name => "p8", :lvl => 9)
-      expect(Permission.find_by_name("p8").kind).to eql(:perm)
+    it 'should work on create' do
+      Permission.create!(:name => 'p8', :lvl => 9)
+      expect(Permission.find_by_name('p8').kind).to eql(:perm)
     end
 
-    it "should work on edit" do
-      Permission.create!(:name => "p8", :lvl => 9)
-      pm = Permission.find_by_name("p8")
+    it 'should work on edit' do
+      Permission.create!(:name => 'p8', :lvl => 9)
+      pm = Permission.find_by_name('p8')
       pm.kind = :temp
       pm.save
-      expect(Permission.find_by_name("p8").kind).to eql(:temp)
+      expect(Permission.find_by_name('p8').kind).to eql(:temp)
     end
 
-    it "should work with default values" do
-      pm = Permission.new(:name => "p9")
+    it 'should work with default values' do
+      pm = Permission.new(:name => 'p9')
       pm.lvl = 9
       pm.save
-      expect(Permission.find_by_name("p9").lvl.to_i).to eql(9)
+      expect(Permission.find_by_name('p9').lvl.to_i).to eql(9)
     end
 
   end
 
-  describe "Named Scopes" do
+  describe 'Named Scopes' do
 
     before do
-      @anna = User.create(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
+      @anna = User.create(:name => 'Anna', :other => :fo, :status => :active, :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
       @mary = User.create(:name => 'Mary', :other => :fo, :status => :inactive, :so => :mac,   :language => :pt, :sex => true, :cool => true)
     end
 
-    it "test_symbolized_finder" do
-      expect(User.where({ :status => :inactive }).all.map(&:name)).to eql(['Mary'])
+    it 'test_symbolized_finder' do
+      expect(User.where(:status => :inactive).all.map(&:name)).to eql(['Mary'])
     end
 
-    it "test_symbolized_scoping" do
-      User.where({ :status => :inactive }).scoping do
+    it 'test_symbolized_scoping' do
+      User.where(:status => :inactive).scoping do
         expect(User.all.map(&:name)).to eql(['Mary'])
       end
     end
 
-    it "should have main named scope" do
+    it 'should have main named scope' do
       expect(User.inactive).to eq([@mary])
     end
 
-    it "should have other to test better" do
+    it 'should have other to test better' do
       expect(User.so(:linux)).to eq([@anna])
     end
 
@@ -428,25 +428,24 @@ describe "Symbolize" do
 
   end
 
-
-  describe ": Default Value" do
+  describe ': Default Value' do
     before(:each) do
-      @user = User.new(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
+      @user = User.new(:name => 'Anna', :other => :fo, :status => :active, :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
     end
 
-    it "should be considered during validation" do
+    it 'should be considered during validation' do
       @user.valid?
       expect(@user.errors.full_messages).to eq([])
     end
 
-    it "should be taken from the DB schema definition" do
+    it 'should be taken from the DB schema definition' do
       expect(@user.country).to eq(:pt)
-      expect(@user.country_text).to eq("Pt")
+      expect(@user.country_text).to eq('Pt')
     end
 
-    it "should be applied to new, just saved, and reloaded objects, and also play fine with :methods option" do
+    it 'should be applied to new, just saved, and reloaded objects, and also play fine with :methods option' do
       expect(@user.role).to eq(:reader)
-      expect(@user.role_text).to eq("reader")
+      expect(@user.role_text).to eq('reader')
       expect(@user).to be_reader
       @user.save!
       expect(@user.role).to eq(:reader)
@@ -456,7 +455,7 @@ describe "Symbolize" do
       expect(@user).to be_reader
     end
 
-    it "should be overridable" do
+    it 'should be overridable' do
       @user.role = :writer
       expect(@user.role).to eq(:writer)
       expect(@user).to be_writer
@@ -471,12 +470,12 @@ describe "Symbolize" do
     # This feature is for the next major version (b/o the compatibility problem)
     it "should detect name collision caused by ':methods => true' option" do
       pending 'next major version'
-      expect {
+      expect do
         User.class_eval do
           # 'reader?' method is already defined, so the line below should raise an error
           symbolize :some_attr, :in => [:reader, :guest], :methods => true
         end
-      }.to raise_error(ArgumentError)
+      end.to raise_error(ArgumentError)
     end
 
   end

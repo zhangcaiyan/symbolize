@@ -3,19 +3,16 @@ source 'https://rubygems.org'
 gemspec
 
 group :test do
-  gem 'bson_ext', platform: :ruby
-  gem 'sqlite3',  platform: :ruby
-  gem 'pg',       platform: :ruby
+  gem 'bson_ext', :platform => :ruby
+  gem 'sqlite3',  :platform => :ruby
+  gem 'pg',       :platform => :ruby
 
-  gem 'activerecord-jdbcmysql-adapter',   platform: :jruby
-  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+  gem 'activerecord-jdbcmysql-adapter',   :platform => :jruby
+  gem 'activerecord-jdbcsqlite3-adapter', :platform => :jruby
 
-  gem 'i18n' #, '0.6.1'
-  gem 'activesupport' #, '3.2.13'
-  gem 'activemodel'   #, '3.2.13'
+  gem 'i18n' # , '0.6.1'
+  gem 'activesupport' # , '3.2.13'
+  gem 'activemodel'   # , '3.2.13'
 
-  if ENV["CI"]
-    gem "coveralls", require: false
-  end
-
+  gem 'coveralls', :require => false if ENV['CI']
 end

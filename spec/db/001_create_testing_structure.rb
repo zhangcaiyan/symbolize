@@ -9,7 +9,7 @@ class CreateTestingStructure < ActiveRecord::Migration
       t.boolean :public
       t.boolean :cool
       t.string :role
-      t.string :country, :default => "pt"
+      t.string :country, :default => 'pt'
       t.string :some_attr  # used in name collision tests
     end
     create_table :user_skills do |t|
@@ -21,8 +21,8 @@ class CreateTestingStructure < ActiveRecord::Migration
       t.string :key, :null => false
     end
     create_table :permissions do |t|
-      t.string  :name, :null => false
-      t.string  :kind, :null => false
+      t.string :name, :null => false
+      t.string :kind, :null => false
       t.integer :lvl,  :null => false
     end
   end
