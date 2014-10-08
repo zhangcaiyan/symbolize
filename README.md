@@ -56,7 +56,7 @@ Mongoid:
 
 Other examples:
 
-    symbolize :so, :in => {
+    symbolize :os, :in => {
         :linux   => "Linux",
         :mac     => "Mac OS X"
     }, :scopes => true
