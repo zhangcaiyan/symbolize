@@ -71,17 +71,16 @@ module Symbolize
           attr_name_str = attr_name.to_s
 
           if enum
-            enum_hash = if enum.is_a?(Hash)
+            enum_hash = \
+            if enum.is_a?(Hash)
               enum
             else
-              Hash[
-                enum.map do |val|
-                  [
-                    val.respond_to?(:to_sym) ? val.to_sym : val,
-                    capitalize ? val.to_s.capitalize : val.to_s,
-                  ]
-                end
-              ]
+              enum.map do |val|
+                [
+                  val.respond_to?(:to_sym) ? val.to_sym : val,
+                  capitalize ? val.to_s.capitalize : val.to_s,
+                ]
+              end.to_h
             end
 
             values_name = attr_name_str + '_values'
