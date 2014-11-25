@@ -17,13 +17,20 @@ Gem::Specification.new do |s|
   s.files = Dir.glob('{lib,spec}/**/*') + %w(README.md Rakefile)
   s.require_path = 'lib'
 
+  s.add_dependency 'i18n'
   s.add_dependency 'activemodel', '>= 3.2', '< 5'
   s.add_dependency 'activesupport', '>= 3.2', '< 5'
 
-  s.add_development_dependency 'activerecord'
-  s.add_development_dependency 'coveralls'
+  # s.add_development_dependency 'pg'
+  # s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'mongoid'
+  s.add_development_dependency 'activerecord'
+  # s.add_development_dependency 'coveralls'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '>= 3'
   s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'guard-rubocop'
+
 end

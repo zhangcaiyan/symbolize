@@ -50,7 +50,7 @@ module Mongoid
       # Specifies that values of the given attributes should be returned
       # as symbols. The table column should be created of type string.
 
-      def symbolize(*attr_names)
+      def symbolize(*attr_names) # rubocop:disable Metrics/AbcSize
         configuration = attr_names.extract_options!
         configuration.assert_valid_keys(:in, :within, :i18n, :scopes, :methods, :capitalize, :validate, :default, :allow_blank, :allow_nil, :type)
 
