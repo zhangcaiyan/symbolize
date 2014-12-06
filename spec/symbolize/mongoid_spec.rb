@@ -7,7 +7,6 @@ class Person
   include Mongoid::Document
   include Mongoid::Symbolize
   include Mongoid::Timestamps
-  include Mongoid::Attributes::Dynamic
 
   symbolize :other, :i18n => false
 
@@ -50,7 +49,6 @@ end
 class Right
   include Mongoid::Document
   include Mongoid::Symbolize
-  include Mongoid::Attributes::Dynamic
 
   validates :name, :presence => true
   symbolize :kind, :in => [:temp, :perm], :default => :perm
