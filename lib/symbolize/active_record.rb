@@ -75,12 +75,10 @@ module Symbolize
             if enum.is_a?(Hash)
               enum
             else
-              enum.map do |val|
-                [
-                  val.respond_to?(:to_sym) ? val.to_sym : val,
-                  capitalize ? val.to_s.capitalize : val.to_s,
-                ]
-              end.to_h
+              enum.each_with_object({}) do |e, a|
+                a.store(e.respond_to?(:to_sym) ? e.to_sym : e,
+                        capitalize ? e.to_s.capitalize : e.to_s)
+              end
             end
 
             values_name = attr_name_str + '_values'

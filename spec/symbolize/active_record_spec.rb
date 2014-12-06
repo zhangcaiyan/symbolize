@@ -43,6 +43,9 @@ class PermissionSubclass < Permission
 end
 
 describe 'Symbolize' do
+  before do
+    [User, Permission].each(&:delete_all)
+  end
 
   it 'should respond to symbolize' do
     expect(ActiveRecord::Base).to respond_to :symbolize

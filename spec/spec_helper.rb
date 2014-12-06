@@ -61,14 +61,4 @@ unless ENV['ONLY_MONGOID']
     CreateTestingStructure.migrate(:up)
   end
 
-  # Spec::Runner.configure do |config|
-  # end
-
-  RSpec.configure do |config|
-
-    config.after(:each) do
-      [User, Permission].each(&:delete_all)
-    end
-
-  end
 end
