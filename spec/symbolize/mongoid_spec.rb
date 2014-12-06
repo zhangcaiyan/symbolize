@@ -11,7 +11,7 @@ class Person
   symbolize :other, :i18n => false
 
   symbolize :language, :in => [:pt, :en]
-  symbolize :sex, :type => Boolean, :scopes => true, :i18n => true
+  symbolize :sex, :type => Boolean, :scopes => true, :i18n => true, :allow_nil => true
   symbolize :status, :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => :shallow
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
@@ -79,15 +79,19 @@ describe 'Symbolize' do
   end
 
   describe 'Person Instantiated' do
-    let(:person) { Person.create(:name => 'Anna', :other => :fo, :status => :active, :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true) }
+    let(:person) do
+      Person.create(:name => 'Anna', :other => :fo, :status => :active,
+                    :so => :linux, :gui => :qt, :language => :pt,
+                    :sex => true, :cool => true)
+      end
 
-    it 'test_symbolize_string' do
+    it 'should work nice with strings' do
       person.status = 'inactive'
       expect(person.status).to eql(:inactive)
       expect(person.read_attribute(:status)).to eql(:inactive)
     end
 
-    it 'test_symbolize_symbol' do
+    it 'should obviously work nice with symbols, we like symbols' do
       person.status = :active
       expect(person.status).to eql(:active)
       person.save
@@ -99,6 +103,12 @@ describe 'Symbolize' do
       other = Person.new(:language => 'en', :so => :mac, :gui => :cocoa, :language => :pt, :sex => true, :status => 'active')
       expect(other[:status]).to eq(:active)
       expect(other.status).to eq(:active)
+    end
+
+    it 'should symbolize obj#attributes["foo"]' do
+      person = Person.create!(:language => 'en', :status => :active)
+      expect(person.attributes['language']).to eq(:en)
+      expect(Person.first.attributes['language']).to eq(:en)
     end
 
     # it "should work nice with numbers" do

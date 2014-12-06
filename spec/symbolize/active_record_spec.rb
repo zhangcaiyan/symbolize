@@ -6,7 +6,7 @@ require 'spec_helper'
 class User < ActiveRecord::Base
   symbolize :other
   symbolize :language, :in => [:pt, :en]
-  symbolize :sex, :in => [true, false], :scopes => true
+  symbolize :sex, :in => [true, false], :scopes => true, :allow_nil => true
   symbolize :status, :in => [:active, :inactive], :i18n => false, :capitalize => true, :scopes => :shallow, :methods => true
   symbolize :so, :allow_blank => true, :in => {
     :linux => 'Linux',
@@ -53,12 +53,14 @@ describe 'Symbolize' do
 
   it 'should have a valid blueprint' do
     # Test records
-    u = User.create(:name => 'Bob', :other => :bar, :status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+    u = User.create(:name => 'Bob', :other => :bar, :status => :inactive,
+                    :so => :mac, :gui => :gtk, :language => :en, :cool => false)
     expect(u.errors.messages).to be_blank
   end
 
   it 'should work nice with default values from active model' do
-    u = User.create(:name => 'Niu', :other => :bar, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
+    u = User.create(:name => 'Niu', :other => :bar, :so => :mac,
+                    :language => :en, :cool => false)
     expect(u.errors.messages).to be_blank
     expect(u.status).to eql(:active)
     expect(u).to be_active
@@ -74,7 +76,8 @@ describe 'Symbolize' do
 
   describe 'User Instantiated' do
     subject do
-      User.create(:name => 'Anna', :other => :fo, :status => status, :so => so, :gui => :qt, :language => :pt, :sex => true, :cool => true)
+      User.create(:name => 'Anna', :other => :fo, :status => status, :so => so,
+                  :gui => :qt, :language => 'pt', :sex => true, :cool => true);
     end
     let(:status) { :active }
     let(:so) { :linux }
@@ -100,7 +103,11 @@ describe 'Symbolize' do
         subject { super().status_before_type_cast }
         it { is_expected.to eq(:active) }
       end
-      # @user.read_attribute(:status).should eql('active')
+
+      describe '#status_before_type_cast' do
+        subject { super().attributes['language'] }
+        it { is_expected.to eq(:pt) }
+      end
     end
 
     describe 'should work nice with numbers' do
@@ -384,6 +391,11 @@ describe 'Symbolize' do
       pm.lvl = 9
       pm.save
       expect(Permission.find_by_name('p9').lvl.to_i).to eql(9)
+    end
+
+    it 'should work with attributes' do
+      Permission.create!(:name => 'p88', :kind => 'temp', :lvl => 8)
+      expect(Permission.find_by_name('p88').kind).to eql(:temp)
     end
 
   end
