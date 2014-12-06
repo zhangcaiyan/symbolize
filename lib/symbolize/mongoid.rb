@@ -67,13 +67,12 @@ module Mongoid
         enum           = [true, false] if [Boolean, ::Boolean].include?(field_type)
 
         attr_names.each do |attr_name|
-          attr_name_str = attr_name.to_s
 
-          if enum
+          if enum # Enumerators
             enum_hash = \
             if enum.is_a?(Hash)
               enum
-            else
+            else # Maps [:a, :b, :c] -> {a: 'A', ...
               enum.each_with_object({}) do |e, a|
                 a.store(e.respond_to?(:to_sym) ? e.to_sym : e,
                           capitalize ? e.to_s.capitalize : e.to_s)
@@ -81,27 +80,29 @@ module Mongoid
             end
 
             #
-            # Builds Mongoid 'field :name, type: type, :default'
+            # Creates Mongoid's 'field :name, type: type, :default'
             #
             { :type => field_type }.tap do |field_opts|
               field_opts.merge!(:default => default_option) if default_option
               field attr_name, field_opts
             end
 
-            values_name = attr_name_str + '_values'
+            #
+            # Creates FIELD_VALUES constants
+            #
+            values_name = "#{attr_name}_values"
             values_const_name = values_name.upcase
-
             # Get the values of :in
             const_set values_const_name, enum_hash unless const_defined? values_const_name
 
-            [
-              'get_' + values_name, attr_name_str + '_enum'
-            ].each do |enum_method_name|
-
+            #
+            # Define methods
+            #
+            ["get_#{values_name}", "#{attr_name}_enum"].each do |enum_method_name|
               define_singleton_method(enum_method_name) do
                 if i18n
                   enum_hash.each_key.map do |symbol|
-                    [i18n_translation_for(attr_name_str, symbol), symbol]
+                    [i18n_translation_for(attr_name, symbol), symbol]
                   end
                 else
                   enum_hash.map(&:reverse)
@@ -112,7 +113,7 @@ module Mongoid
             if methods
               enum_hash.each_key do |key|
                 define_method("#{key}?") do
-                  send(attr_name_str) == key.to_sym
+                  send(attr_name) == key.to_sym
                 end
               end
             end
@@ -121,10 +122,10 @@ module Mongoid
               if scopes == :shallow
                 enum_hash.each_key do |name|
                   next unless name.respond_to?(:to_sym)
-                  scope name, -> { where(attr_name_str => name) }
+                  scope name, -> { where(attr_name => name) }
                 end
               else # scoped scopes
-                scope attr_name_str, ->(val) { where(attr_name_str => val) }
+                scope attr_name, ->(val) { where(attr_name => val) }
               end
             end
 
@@ -136,11 +137,11 @@ module Mongoid
           #
           # Creates <attribute>_text helper, human text for attribute.
           #
-          define_method(attr_name_str + '_text') do
+          define_method("#{attr_name}_text") do
             if i18n
-              read_i18n_attribute(attr_name_str)
+              read_i18n_attribute(attr_name)
             else
-              attr_value = send(attr_name_str)
+              attr_value = send(attr_name)
               if enum
                 enum_hash[attr_value]
               else
