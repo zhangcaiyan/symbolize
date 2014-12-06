@@ -83,7 +83,7 @@ describe 'Symbolize' do
       Person.create(:name => 'Anna', :other => :fo, :status => :active,
                     :so => :linux, :gui => :qt, :language => :pt,
                     :sex => true, :cool => true)
-      end
+    end
 
     it 'should work nice with strings' do
       person.status = 'inactive'

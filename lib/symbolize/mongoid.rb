@@ -75,7 +75,7 @@ module Mongoid
             else # Maps [:a, :b, :c] -> {a: 'A', ...
               enum.each_with_object({}) do |e, a|
                 a.store(e.respond_to?(:to_sym) ? e.to_sym : e,
-                          capitalize ? e.to_s.capitalize : e.to_s)
+                        capitalize ? e.to_s.capitalize : e.to_s)
               end
             end
 
@@ -130,7 +130,9 @@ module Mongoid
             end
 
             if validation
-              validates(*attr_names, configuration.slice(:allow_nil, :allow_blank).merge(:inclusion => { :in => enum_hash.keys }))
+              validates(*attr_names,
+                        configuration.slice(:allow_nil, :allow_blank)
+                          .merge(:inclusion => { :in => enum_hash.keys }))
             end
           end
 
