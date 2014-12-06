@@ -142,7 +142,6 @@ describe 'Symbolize' do
 
     it 'should acts nice with blank #symbol_text' do
       person.so = ''
-      expect(person.so).to be_blank
       person.save
       expect(person.so_text).to be_nil
     end
@@ -435,10 +434,12 @@ describe 'Symbolize' do
         expect(@anna.language_changed?).to be true
       end
 
-      it 'is not dirty if you set the attribute value to the same value' do
-        expect(@anna.language).to eq(:pt)
-        expect(@anna.language_changed?).to be false
+      it 'is dirty if you change the attribute value' do
+        @anna.language = :en
+        expect(@anna.changed).to be_empty
+      end
 
+      it 'is not dirty if you set the attribute value to the same value' do
         return_value = @anna.language = :pt
         expect(return_value).to eq(:pt)
         expect(@anna.language_changed?).to be false

@@ -77,7 +77,7 @@ describe 'Symbolize' do
   describe 'User Instantiated' do
     subject do
       User.create(:name => 'Anna', :other => :fo, :status => status, :so => so,
-                  :gui => :qt, :language => 'pt', :sex => true, :cool => true);
+                  :gui => :qt, :language => 'pt', :sex => true, :cool => true)
     end
     let(:status) { :active }
     let(:so) { :linux }
@@ -266,6 +266,16 @@ describe 'Symbolize' do
         expect(subject.sex_text).to eql('Masculino')
       end
 
+      it 'should recognize 0 as false on boolean fields' do
+        subject.update_attribute(:sex, '0')
+        expect(subject.sex).to eq(false)
+      end
+
+      it 'should recognize 1 as true on boolean fields' do
+        subject.update_attribute(:sex, '1')
+        expect(subject.sex).to eq(true)
+      end
+
       it 'should get the correct values' do
         expect(User.get_sex_values).to eql([['Feminino', true], ['Masculino', false]])
       end
@@ -325,6 +335,11 @@ describe 'Symbolize' do
         return_value = subject.language = :pt
         expect(return_value).to eq(:pt)
         expect(subject.language_changed?).to be false
+      end
+
+      it 'is not changed if you set the attribute value to the same value' do
+        subject.language = :pt
+        expect(subject.changed).to be_empty
       end
 
       it 'is not dirty if you set the value to the same but as string' do
