@@ -147,6 +147,16 @@ describe 'Symbolize' do
       expect(person.so_text).to be_nil
     end
 
+    it 'should recognize 0 as false on boolean fields' do
+      person.update_attribute(:sex, '0')
+      expect(person.sex).to eq(false)
+    end
+
+    it 'should recognize 1 as true on boolean fields' do
+      person.update_attribute(:sex, '1')
+      expect(person.sex).to eq(true)
+    end
+
     it 'should not validates other' do
       person.other = nil
       expect(person).to be_valid
