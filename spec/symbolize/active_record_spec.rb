@@ -320,7 +320,7 @@ describe 'Symbolize' do
         expect(subject.language_changed?).to be false
       end
 
-      it 'is not dirty if you set the attribute value to the same value (string)' do
+      it 'is not dirty if you set the value to the same but as string' do
         expect(subject.language).to eq(:pt)
         expect(subject.language_changed?).to be false
 

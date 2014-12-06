@@ -400,7 +400,9 @@ describe 'Symbolize' do
     describe 'dirty tracking / changed flag' do
 
       before do
-        Person.create!(:name => 'Anna', :other => :fo, :status => :active, :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
+        Person.create!(:name => 'Anna', :other => :fo, :status => :active,
+                       :so => :linux, :gui => :qt, :language => :pt,
+                       :sex => true, :cool => true)
         @anna = Person.where(:name => 'Anna').first
       end
 
@@ -413,12 +415,18 @@ describe 'Symbolize' do
         expect(@anna.language_changed?).to be true
       end
 
-      it 'is not dirty if you set the attribute value to the same value it was originally' do
+      it 'is not dirty if you set the attribute value to the same value' do
         expect(@anna.language).to eq(:pt)
         expect(@anna.language_changed?).to be false
 
         return_value = @anna.language = :pt
         expect(return_value).to eq(:pt)
+        expect(@anna.language_changed?).to be false
+      end
+
+      it 'is not dirty if you set the same value as string instead of symbol' do
+        @anna.language = 'pt'
+        expect(@anna.language).to eq(:pt)
         expect(@anna.language_changed?).to be false
       end
 
