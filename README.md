@@ -1,14 +1,25 @@
 Symbolize (attribute values)
 =========
 
+# No longer maintained
+
+
+## Please check this other gems:
+
+# Mongoid
+
+https://github.com/thetron/mongoid-enum
+
+
+# ActiveModel & POROs
+
+https://github.com/brainspec/enumerize
+
+
 This plugin introduces an easy way to use symbols for values of attributes.
 Symbolized attributes return a ruby symbol (or nil) as their value
 and can be set using :symbols or "strings".
 
-[![Gem Version](https://badge.fury.io/rb/symbolize.png)](http://badge.fury.io/rb/symbolize)
-[![Code Climate](https://codeclimate.com/github/nofxx/symbolize.png)](https://codeclimate.com/github/nofxx/symbolize)
-[![Coverage Status](https://coveralls.io/repos/nofxx/symbolize/badge.png)](https://coveralls.io/r/nofxx/symbolize)
-[![Build Status](https://travis-ci.org/nofxx/symbolize.png?branch=master)](https://travis-ci.org/nofxx/symbolize)
 
 
 Install
